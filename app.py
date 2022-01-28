@@ -1,3 +1,4 @@
+from cgitb import scanvars
 from crypt import methods
 from email.policy import default
 from turtle import position
@@ -5,15 +6,7 @@ from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap5
-from wtforms import (
-    StringField,
-    SubmitField,
-    IntegerField,
-    HiddenField,
-    SelectField,
-    RadioField,
-    BooleanField,
-)
+from wtforms import StringField, SubmitField, IntegerField, HiddenField, BooleanField
 from wtforms.validators import InputRequired, NumberRange, Regexp
 from datetime import datetime
 
@@ -45,12 +38,21 @@ class DailyJournal(db.Model):
 class WeeklyJournal(db.Model):
     __tablename__ = "weeklyjournal"
     date = db.Column(db.Date, primary_key=True)
+    scans = db.Column(db.Boolean)
+    industry_groups = db.Column(db.String, nullable=True)
     watchlist = db.Column(db.Boolean)
     focuslist = db.Column(db.Boolean)
     open_positions = db.Column(db.Boolean)
 
-    def __init__(self, date):
+    def __init__(
+        self, date, scans, watchlist, focuslist, open_positions, industry_groups=""
+    ):
         self.date = date
+        self.scans = scans
+        self.watchlist = watchlist
+        self.focuslist = focuslist
+        self.open_positions = open_positions
+        self.industry_groups = industry_groups
 
 
 class Trade(db.Model):
@@ -71,7 +73,7 @@ class DailyForm(FlaskForm):
         validators=[
             InputRequired(),
             Regexp(
-                r"^((?:19|20)\\d\\d)-(0?[1-9]|1[012])-([12][0-9]|3[01]|0?[1-9])$",
+                r"^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$",
                 message="Invalid date format",
             ),
         ],
@@ -106,13 +108,15 @@ class WeeklyForm(FlaskForm):
         validators=[
             InputRequired(),
             Regexp(
-                r"^((?:19|20)\\d\\d)-(0?[1-9]|1[012])-([12][0-9]|3[01]|0?[1-9])$",
+                r"^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$",
                 message="Invalid date format",
             ),
         ],
     )
-    watchlist = BooleanField("Watchlist")
-    focuslist = BooleanField("Focuslist")
+    scans = BooleanField("Review weekly scans")
+    industry_groups = StringField("Record notable changes of industry groups")
+    watchlist = BooleanField("Review Watchlist")
+    focuslist = BooleanField("Create Focuslist")
     open_positions = BooleanField("Open positions")
     submit = SubmitField("Submit")
 
@@ -171,7 +175,7 @@ def add_dailyjournal():
         db.session.add(record)
         db.session.commit()
         message = f"The data for {date} has been submitted."
-        return render_template("add_record.html", message=message)
+        return render_template("add_dailyjournal.html", message=message)
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -187,14 +191,18 @@ def add_weeklyjournal():
     form = WeeklyForm()
     if form.validate_on_submit():
         date = datetime.strptime(request.form["date"], "%Y-%m-%d")
+        industry_groups = request.form["industry_groups"]
+        scans = request.form["scans"]
         watchlist = request.form["watchlist"]
         focuslist = request.form["focuslist"]
-        open_positions = request.form["open positions"]
-        record = WeeklyJournal(date, watchlist, focuslist, open_positions)
+        open_positions = request.form["open_positions"]
+        record = WeeklyJournal(
+            date, scans, industry_groups, watchlist, focuslist, open_positions
+        )
         db.session.add(record)
         db.session.commit()
         message = f"The data for {date} has been submitted."
-        return render_template("add_record.html", message=message)
+        return render_template("add_weeklyjournal.html", message=message)
     else:
         for field, errors in form.errors.items():
             for error in errors:
