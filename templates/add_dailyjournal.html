@@ -1,0 +1,85 @@
+{% from "bootstrap5/form.html" import render_form %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Investing Journal</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/starter-template/">
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="main.css" rel="stylesheet">
+
+</head>
+
+
+<div class="container">
+    <div class="row pb-5">
+        <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+            <h1 class="pt-5 pb-2">Daily trading routine</h1>
+
+            {% if message %}
+
+            <!-- the form was submitted and message exists -->
+            <p class="lead"><strong>{{ message }}</strong></p>
+
+            <!-- links -->
+            <p><a href="{{ url_for('add_record') }}">Submit another date.</a></p>
+
+            <p><a href="{{ url_for('index') }}">Return to the index.</a></p>
+
+            {% else %}
+            <!-- the form is displayed when template opens via GET not POST -->
+
+            <p class="lead alert alert-primary">Add a new date to the database.</p>
+
+            <p class="ml-4"><a href="{{ url_for('index') }}">Return to the index.</a></p>
+
+            <!-- show flash - based on WTForms validators
+                            				 see https://pythonprogramming.net/flash-flask-tutorial/
+                            				 get_flashed_messages() exists here because of flash()
+                            				 in the route function
+                            				 -->
+            {% with errors = get_flashed_messages() %}
+            {% if errors %}
+            {% for err in errors %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                {{ err }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <!-- end of flash -->
+
+            {{ render_form(form) }}
+
+            {% endif %}
+        </div>
+    </div>
+</div>
