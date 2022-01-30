@@ -1,6 +1,7 @@
 from cgitb import scanvars
 from crypt import methods
 from email.policy import default
+from enum import unique
 from turtle import position
 from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -38,21 +39,27 @@ class DailyJournal(db.Model):
 class WeeklyJournal(db.Model):
     __tablename__ = "weeklyjournal"
     date = db.Column(db.Date, primary_key=True)
-    scans = db.Column(db.Boolean)
     industry_groups = db.Column(db.String, nullable=True)
-    watchlist = db.Column(db.Boolean)
-    focuslist = db.Column(db.Boolean)
-    open_positions = db.Column(db.Boolean)
+    scans = db.Column(db.Boolean, default=False, server_default="False")
+    watchlist = db.Column(db.Boolean, default=False, server_default="False")
+    focuslist = db.Column(db.Boolean, default=False, server_default="False")
+    open_positions = db.Column(db.Boolean, default=False, server_default="False")
 
     def __init__(
-        self, date, scans, watchlist, focuslist, open_positions, industry_groups=""
+        self,
+        date,
+        industry_groups,
+        scans,
+        watchlist,
+        focuslist,
+        open_positions,
     ):
         self.date = date
+        self.industry_groups = industry_groups
         self.scans = scans
         self.watchlist = watchlist
         self.focuslist = focuslist
         self.open_positions = open_positions
-        self.industry_groups = industry_groups
 
 
 class Trade(db.Model):
@@ -113,8 +120,8 @@ class WeeklyForm(FlaskForm):
             ),
         ],
     )
-    scans = BooleanField("Review weekly scans")
     industry_groups = StringField("Record notable changes of industry groups")
+    scans = BooleanField("Review weekly scans")
     watchlist = BooleanField("Review Watchlist")
     focuslist = BooleanField("Create Focuslist")
     open_positions = BooleanField("Open positions")
@@ -190,14 +197,14 @@ def add_dailyjournal():
 def add_weeklyjournal():
     form = WeeklyForm()
     if form.validate_on_submit():
-        date = datetime.strptime(request.form["date"], "%Y-%m-%d")
-        industry_groups = request.form["industry_groups"]
-        scans = request.form["scans"]
-        watchlist = request.form["watchlist"]
-        focuslist = request.form["focuslist"]
-        open_positions = request.form["open_positions"]
+        date = datetime.strptime(form.date.data, "%Y-%m-%d")
+        industry_groups = request.form.get("industry_groups")
+        scans = form.scans.data
+        watchlist = form.watchlist.data
+        focuslist = form.focuslist.data
+        open_positions = form.open_positions.data
         record = WeeklyJournal(
-            date, scans, industry_groups, watchlist, focuslist, open_positions
+            date, industry_groups, scans, watchlist, focuslist, open_positions
         )
         db.session.add(record)
         db.session.commit()
