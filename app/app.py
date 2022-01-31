@@ -25,22 +25,40 @@ def create_db():
     db.create_all()
 
 
-class DailyJournal(db.Model):
-    __tablename__ = "dailyjournal"
+class DailyRoutine(db.Model):
+    __tablename__ = "dailyroutine"
     date = db.Column(db.Date, primary_key=True)
     stocks_above_20ma = db.Column(db.Integer, unique=False, nullable=True)
     stocks_above_50ma = db.Column(db.Integer, unique=False, nullable=True)
     stocks_above_200ma = db.Column(db.Integer, unique=False, nullable=True)
 
+    def to_dict(self):
+        return {
+            "date": self.date,
+            "stocks_above_20ma": self.stocks_above_20ma,
+            "stocks_above_50ma": self.stocks_above_50ma,
+            "stocks_above_200ma": self.stocks_above_200ma,
+        }
 
-class WeeklyJournal(db.Model):
-    __tablename__ = "weeklyjournal"
+
+class WeeklyRoutine(db.Model):
+    __tablename__ = "weeklyroutine"
     date = db.Column(db.Date, primary_key=True)
     industry_groups = db.Column(db.String, nullable=True)
     scans = db.Column(db.Boolean, default=False, server_default="False")
     watchlist = db.Column(db.Boolean, default=False, server_default="False")
     focuslist = db.Column(db.Boolean, default=False, server_default="False")
     open_positions = db.Column(db.Boolean, default=False, server_default="False")
+
+    def to_dict(self):
+        return {
+            "date": self.date,
+            "industry_groups": self.industry_groups,
+            "scans": self.scans,
+            "watchlist": self.watchlist,
+            "focuslist": self.focuslist,
+            "open_positions": self.open_positions,
+        }
 
 
 class Trade(db.Model):
@@ -52,6 +70,17 @@ class Trade(db.Model):
     net_pnl = db.Column(db.Integer, default=0)
     net_roi = db.Column(db.Integer, default=0)
     notes = db.Column(db.Text, default="")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "date": self.date,
+            "symbol": self.symbol,
+            "position_size": self.position_size,
+            "net_pnl": self.net_pnl,
+            "net_roi": self.net_roi,
+            "notes": self.notes,
+        }
 
 
 class DailyForm(FlaskForm):
@@ -146,14 +175,13 @@ def index():
 
 
 @app.route("/add_dailyroutine", methods=["GET", "POST"])
-def add_dailyjournal():
+def add_dailyroutine():
 
-    entries = DailyJournal.query
     form = DailyForm()
 
     if form.validate_on_submit():
 
-        record = DailyJournal(
+        record = DailyRoutine(
             date=datetime.strptime(form.date.data, "%Y-%m-%d"),
             stocks_above_20ma=form.stocks_above_20ma.data,
             stocks_above_50ma=form.stocks_above_50ma.data,
@@ -165,7 +193,7 @@ def add_dailyjournal():
 
         message = f"The data for {record.date} has been submitted."
 
-        return render_template("add_dailyjournal.html", message=message)
+        return render_template("add_dailyroutine.html", message=message)
 
     else:
         for field, errors in form.errors.items():
@@ -175,18 +203,17 @@ def add_dailyjournal():
                     "error",
                 )
 
-    return render_template("add_dailyjournal.html", form=form, entries=entries)
+    return render_template("add_dailyroutine.html", form=form)
 
 
 @app.route("/add_weeklyroutine", methods=["GET", "POST"])
-def add_weeklyjournal():
+def add_weeklyroutine():
 
-    entries = WeeklyJournal.query
     form = WeeklyForm()
 
     if form.validate_on_submit():
 
-        record = WeeklyJournal(
+        record = WeeklyRoutine(
             date=datetime.strptime(form.date.data, "%Y-%m-%d"),
             industry_groups=form.industry_groups.data,
             scans=form.scans.data,
@@ -200,7 +227,7 @@ def add_weeklyjournal():
 
         message = f"The data for {record.date} has been submitted."
 
-        return render_template("add_weeklyjournal.html", message=message)
+        return render_template("add_weeklyroutine.html", message=message)
 
     else:
         for field, errors in form.errors.items():
@@ -210,13 +237,12 @@ def add_weeklyjournal():
                     "error",
                 )
 
-    return render_template("add_weeklyjournal.html", form=form, entries=entries)
+    return render_template("add_weeklyroutine.html", form=form)
 
 
 @app.route("/add_trade", methods=["GET", "POST"])
 def add_trade():
 
-    entries = Trade.query
     form = TradeForm()
 
     if form.validate_on_submit():
@@ -245,9 +271,38 @@ def add_trade():
                     "error",
                 )
 
-    return render_template("add_trade.html", form=form, entries=entries)
+    return render_template("add_trade.html", form=form)
+
+
+@app.route("/api/trade")
+def trade_data():
+    return {"data": [trade.to_dict() for trade in Trade.query.all()]}
+
+
+@app.route("/api/daily")
+def daily_data():
+    return {
+        "data": [dailyroutine.to_dict() for dailyroutine in DailyRoutine.query.all()]
+    }
+
+
+@app.route("/api/weekly")
+def weekly_data():
+    return {
+        "data": [weeklyroutine.to_dict() for weeklyroutine in WeeklyRoutine.query.all()]
+    }
 
 
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
+
+
+@app.errorhandler(404)
+def handle_404(e):
+    return "404", 404
+
+
+@app.errorhandler(500)
+def handle_500(e):
+    return "500", 500

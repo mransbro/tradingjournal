@@ -14,7 +14,7 @@
             <p class="lead"><strong>{{ message }}</strong></p>
 
             <!-- links -->
-            <p><a href="{{ url_for('add_weeklyjournal') }}">Submit another date.</a></p>
+            <p><a href="{{ url_for('add_weeklyroutine') }}">Submit another date.</a></p>
 
             <p><a href="{{ url_for('index') }}">Return to the homepage.</a></p>
 
@@ -57,16 +57,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for entry in entries %}
-                        <tr>
-                            <td>{{ entry.date }}</td>
-                            <td>{{ entry.industry_groups }}</td>
-                            <td>{{ entry.scans }}</td>
-                            <td>{{ entry.watchlist }}</td>
-                            <td>{{ entry.focuslist }}</td>
-                            <td>{{ entry.open_positions }}</td>
-                        </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
 
@@ -74,4 +64,22 @@
         </div>
     </div>
 </div>
-{% endblock %}        
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            ajax: '/api/weekly',
+            columns: [
+                { data: 'date' },
+                { data: 'industry_groups' },
+                { data: 'scans' },
+                { data: 'watchlist' },
+                { data: 'focuslist' },
+                { data: 'open_positions' }
+            ],
+        });
+    });
+</script>
+{% endblock %}
