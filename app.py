@@ -1,9 +1,4 @@
-from cgitb import scanvars
-from crypt import methods
-from email.policy import default
-from enum import unique
-from turtle import position
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap5
@@ -15,11 +10,19 @@ app = Flask(__name__)
 
 bootstrap = Bootstrap5(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///entries.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///journal.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "igeuHGFFk773VAUEn2bcwim3"
 
 db = SQLAlchemy(app)
+
+# Date format in YYYY-MM-DD
+dateregex = "^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$"
+
+
+# initialize database
+def create_db():
+    db.create_all()
 
 
 class DailyJournal(db.Model):
@@ -28,12 +31,6 @@ class DailyJournal(db.Model):
     stocks_above_20ma = db.Column(db.Integer, unique=False, nullable=True)
     stocks_above_50ma = db.Column(db.Integer, unique=False, nullable=True)
     stocks_above_200ma = db.Column(db.Integer, unique=False, nullable=True)
-
-    def __init__(self, date, stocks_above_20ma, stocks_above_50ma, stocks_above_200ma):
-        self.date = date
-        self.stocks_above_20ma = stocks_above_20ma
-        self.stocks_above_50ma = stocks_above_50ma
-        self.stocks_above_200ma = stocks_above_200ma
 
 
 class WeeklyJournal(db.Model):
@@ -44,22 +41,6 @@ class WeeklyJournal(db.Model):
     watchlist = db.Column(db.Boolean, default=False, server_default="False")
     focuslist = db.Column(db.Boolean, default=False, server_default="False")
     open_positions = db.Column(db.Boolean, default=False, server_default="False")
-
-    def __init__(
-        self,
-        date,
-        industry_groups,
-        scans,
-        watchlist,
-        focuslist,
-        open_positions,
-    ):
-        self.date = date
-        self.industry_groups = industry_groups
-        self.scans = scans
-        self.watchlist = watchlist
-        self.focuslist = focuslist
-        self.open_positions = open_positions
 
 
 class Trade(db.Model):
@@ -80,7 +61,7 @@ class DailyForm(FlaskForm):
         validators=[
             InputRequired(),
             Regexp(
-                r"^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$",
+                dateregex,
                 message="Invalid date format",
             ),
         ],
@@ -115,7 +96,7 @@ class WeeklyForm(FlaskForm):
         validators=[
             InputRequired(),
             Regexp(
-                r"^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$",
+                dateregex,
                 message="Invalid date format",
             ),
         ],
@@ -134,7 +115,7 @@ class TradeForm(FlaskForm):
         validators=[
             InputRequired(),
             Regexp(
-                r"^((?:19|20)\\d\\d)-(0?[1-9]|1[012])-([12][0-9]|3[01]|0?[1-9])$",
+                dateregex,
                 message="Invalid date format",
             ),
         ],
@@ -145,7 +126,7 @@ class TradeForm(FlaskForm):
         "Net P&L ($)",
         validators=[
             InputRequired(),
-            NumberRange(min=0, max=100, message="Invalid number"),
+            NumberRange(min=0, max=10000, message="Invalid number"),
         ],
     )
     net_roi = IntegerField(
@@ -156,11 +137,7 @@ class TradeForm(FlaskForm):
         ],
     )
     notes = StringField("Notes")
-
-
-# initialize database
-def create_db():
-    db.create_all()
+    submit = SubmitField("Submit")
 
 
 @app.route("/")
@@ -170,19 +147,26 @@ def index():
 
 @app.route("/add_dailyroutine", methods=["GET", "POST"])
 def add_dailyjournal():
+
+    entries = DailyJournal.query
     form = DailyForm()
+
     if form.validate_on_submit():
-        date = datetime.strptime(request.form["date"], "%Y-%m-%d")
-        stocks_above_20ma = request.form["stocks_above_20ma"]
-        stocks_above_50ma = request.form["stocks_above_50ma"]
-        stocks_above_200ma = request.form["stocks_above_200ma"]
+
         record = DailyJournal(
-            date, stocks_above_20ma, stocks_above_50ma, stocks_above_200ma
+            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            stocks_above_20ma=form.stocks_above_20ma.data,
+            stocks_above_50ma=form.stocks_above_50ma.data,
+            stocks_above_200ma=form.stocks_above_200ma.data,
         )
+
         db.session.add(record)
         db.session.commit()
-        message = f"The data for {date} has been submitted."
+
+        message = f"The data for {record.date} has been submitted."
+
         return render_template("add_dailyjournal.html", message=message)
+
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -190,26 +174,34 @@ def add_dailyjournal():
                     "Error in {}: {}".format(getattr(form, field).label.text, error),
                     "error",
                 )
-    return render_template("add_dailyjournal.html", form=form)
+
+    return render_template("add_dailyjournal.html", form=form, entries=entries)
 
 
 @app.route("/add_weeklyroutine", methods=["GET", "POST"])
 def add_weeklyjournal():
+
+    entries = WeeklyJournal.query
     form = WeeklyForm()
+
     if form.validate_on_submit():
-        date = datetime.strptime(form.date.data, "%Y-%m-%d")
-        industry_groups = request.form.get("industry_groups")
-        scans = form.scans.data
-        watchlist = form.watchlist.data
-        focuslist = form.focuslist.data
-        open_positions = form.open_positions.data
+
         record = WeeklyJournal(
-            date, industry_groups, scans, watchlist, focuslist, open_positions
+            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            industry_groups=form.industry_groups.data,
+            scans=form.scans.data,
+            watchlist=form.watchlist.data,
+            focuslist=form.focuslist.data,
+            open_positions=form.open_positions.data,
         )
+
         db.session.add(record)
         db.session.commit()
-        message = f"The data for {date} has been submitted."
+
+        message = f"The data for {record.date} has been submitted."
+
         return render_template("add_weeklyjournal.html", message=message)
+
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -217,19 +209,34 @@ def add_weeklyjournal():
                     "Error in {}: {}".format(getattr(form, field).label.text, error),
                     "error",
                 )
-    return render_template("add_weeklyjournal.html", form=form)
+
+    return render_template("add_weeklyjournal.html", form=form, entries=entries)
 
 
-@app.route("/add_trade")
+@app.route("/add_trade", methods=["GET", "POST"])
 def add_trade():
+
+    entries = Trade.query
     form = TradeForm()
+
     if form.validate_on_submit():
-        symbol = request.form["symbol"]
-        record = Trade(date, symbol)
+
+        record = Trade(
+            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            symbol=form.symbol.data.upper(),
+            position_size=form.position_size.data,
+            net_pnl=form.net_pnl.data,
+            net_roi=form.net_roi.data,
+            notes=form.notes.data,
+        )
+
         db.session.add(record)
         db.session.commit()
-        message = f"The data for {symbol} has been updated"
+
+        message = f"The data for {record.symbol} has been updated"
+
         return render_template("add_trade.html", message=message, form=form)
+
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -237,4 +244,10 @@ def add_trade():
                     "Error in {}: {}".format(getattr(form, field).label.text, error),
                     "error",
                 )
-    return render_template("add_trade.html", form=form)
+
+    return render_template("add_trade.html", form=form, entries=entries)
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
