@@ -171,7 +171,7 @@ class TradeForm(FlaskForm):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", title="Trading Journal")
 
 
 @app.route("/add_dailyroutine", methods=["GET", "POST"])
@@ -203,7 +203,7 @@ def add_dailyroutine():
                     "error",
                 )
 
-    return render_template("add_dailyroutine.html", form=form)
+    return render_template("add_dailyroutine.html", form=form, title="Daily Routine")
 
 
 @app.route("/add_weeklyroutine", methods=["GET", "POST"])
@@ -237,7 +237,7 @@ def add_weeklyroutine():
                     "error",
                 )
 
-    return render_template("add_weeklyroutine.html", form=form)
+    return render_template("add_weeklyroutine.html", form=form, title="Weekly Routine")
 
 
 @app.route("/add_trade", methods=["GET", "POST"])
@@ -271,7 +271,7 @@ def add_trade():
                     "error",
                 )
 
-    return render_template("add_trade.html", form=form)
+    return render_template("add_trade.html", form=form, title="Trades")
 
 
 @app.route("/api/trade")
@@ -295,7 +295,7 @@ def weekly_data():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", title="Dashboard")
 
 
 @app.errorhandler(404)
