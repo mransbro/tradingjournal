@@ -18,6 +18,7 @@ db = SQLAlchemy(app)
 
 # Date format in YYYY-MM-DD
 dateregex = "^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$"
+letterregex = "^[a-zA-Z]+$"
 
 
 # initialize database
@@ -149,7 +150,13 @@ class TradeForm(FlaskForm):
             ),
         ],
     )
-    symbol = StringField("Symbol")
+    symbol = StringField(
+        "Symbol",
+        validators=[
+            InputRequired(),
+            Regexp(letterregex, message="Invalid symbol format"),
+        ],
+    )
     position_size = IntegerField("Position Size ($)")
     net_pnl = IntegerField("Net P&L ($)", validators=[InputRequired()])
     net_roi = IntegerField("Net ROI (%)", validators=[InputRequired()])
