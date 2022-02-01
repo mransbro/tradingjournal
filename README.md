@@ -1,6 +1,6 @@
 # Trading journal
 
-A simple trade journal and market routine app built with Python Flask.
+A simple trade journal and market review app built with Python Flask.
 
 ## Installation
 

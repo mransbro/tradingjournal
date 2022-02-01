@@ -2,7 +2,14 @@ from flask import Flask, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap5
-from wtforms import StringField, SubmitField, IntegerField, HiddenField, BooleanField
+from wtforms import (
+    StringField,
+    SubmitField,
+    IntegerField,
+    HiddenField,
+    BooleanField,
+    DateField,
+)
 from wtforms.validators import InputRequired, NumberRange, Regexp
 from datetime import datetime
 
@@ -19,6 +26,7 @@ db = SQLAlchemy(app)
 # Date format in YYYY-MM-DD
 dateregex = "^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$"
 letterregex = "^[a-zA-Z]+$"
+numberregex = "^[0-9]+$"
 
 
 # initialize database
@@ -86,16 +94,7 @@ class Trade(db.Model):
 
 class DailyForm(FlaskForm):
     id_field = HiddenField()
-    date = StringField(
-        "Date (YYYY-MM-DD)",
-        validators=[
-            InputRequired(),
-            Regexp(
-                dateregex,
-                message="Invalid date format",
-            ),
-        ],
-    )
+    date = DateField(id="datepicker", format="%Y-%m-%d")
     stocks_above_20ma = IntegerField(
         "Stocks above 20ma (%)",
         validators=[
@@ -121,16 +120,7 @@ class DailyForm(FlaskForm):
 
 
 class WeeklyForm(FlaskForm):
-    date = StringField(
-        "Date (YYYY-MM-DD)",
-        validators=[
-            InputRequired(),
-            Regexp(
-                dateregex,
-                message="Invalid date format",
-            ),
-        ],
-    )
+    date = DateField(id="datepicker", format="%Y-%m-%d")
     industry_groups = StringField("Record notable changes of industry groups")
     scans = BooleanField("Review weekly scans")
     watchlist = BooleanField("Review Watchlist")
@@ -140,16 +130,7 @@ class WeeklyForm(FlaskForm):
 
 
 class TradeForm(FlaskForm):
-    date = StringField(
-        "Date (YYYY-MM-DD)",
-        validators=[
-            InputRequired(),
-            Regexp(
-                dateregex,
-                message="Invalid date format",
-            ),
-        ],
-    )
+    date = DateField(id="datepicker", format="%Y-%m-%d")
     symbol = StringField(
         "Symbol",
         validators=[
@@ -158,8 +139,8 @@ class TradeForm(FlaskForm):
         ],
     )
     position_size = IntegerField("Position Size ($)")
-    net_pnl = IntegerField("Net P&L ($)", validators=[InputRequired()])
-    net_roi = IntegerField("Net ROI (%)", validators=[InputRequired()])
+    net_pnl = IntegerField("Net P&L ($)")
+    net_roi = IntegerField("Net ROI (%)")
     notes = StringField("Notes")
     submit = SubmitField("Submit")
 
@@ -177,7 +158,7 @@ def add_dailyroutine():
     if form.validate_on_submit():
 
         record = DailyRoutine(
-            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            date=form.date.data,
             stocks_above_20ma=form.stocks_above_20ma.data,
             stocks_above_50ma=form.stocks_above_50ma.data,
             stocks_above_200ma=form.stocks_above_200ma.data,
@@ -188,7 +169,7 @@ def add_dailyroutine():
 
         message = f"The data for {record.date} has been submitted."
 
-        return render_template("add_dailyroutine.html", message=message)
+        return render_template("add_dailyroutine.html", message=message, form=form)
 
     else:
         for field, errors in form.errors.items():
@@ -209,7 +190,7 @@ def add_weeklyroutine():
     if form.validate_on_submit():
 
         record = WeeklyRoutine(
-            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            date=form.date.data,
             industry_groups=form.industry_groups.data,
             scans=form.scans.data,
             watchlist=form.watchlist.data,
@@ -222,7 +203,7 @@ def add_weeklyroutine():
 
         message = f"The data for {record.date} has been submitted."
 
-        return render_template("add_weeklyroutine.html", message=message)
+        return render_template("add_weeklyroutine.html", message=message, form=form)
 
     else:
         for field, errors in form.errors.items():
@@ -243,7 +224,7 @@ def add_trade():
     if form.validate_on_submit():
 
         record = Trade(
-            date=datetime.strptime(form.date.data, "%Y-%m-%d"),
+            date=form.date.data,
             symbol=form.symbol.data.upper(),
             position_size=form.position_size.data,
             net_pnl=form.net_pnl.data,

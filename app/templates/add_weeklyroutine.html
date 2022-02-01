@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 {% from "bootstrap5/form.html" import render_form %}
 
-{% block title %}Weekly Routine{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
-
-                      
+                 
 {% block form %}{{ render_form(form) }}{% endblock %}
 
 {% block table %}
