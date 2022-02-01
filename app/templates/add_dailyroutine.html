@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-{% from 'bootstrap5/form.html' import render_form %}
+{% from "bootstrap5/form.html" import render_form %}
 
 {% block title %}{{ title }}{% endblock %}
+
 
 
 {% block form %}{{ render_form(form) }}{% endblock %}
@@ -12,11 +13,9 @@
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Symbol</th>
-                <th>Position Size</th>
-                <th>Net P&L</th>
-                <th>Net ROI</th>
-                <th>Notes</th>
+                <th>Stocks above 20ma</th>
+                <th>Stocks above 50ma</th>
+                <th>Stocks above 200ma</th>
             </tr>
         </thead>
         <tbody>
@@ -26,18 +25,17 @@
 {% endblock %}
 
 
+
 {% block scripts %}
 <script>
     $(document).ready(function () {
         $('#data').DataTable({
-            ajax: '/api/trade',
+            ajax: '/api/daily',
             columns: [
-                { data: 'date' },
-                { data: 'symbol' },
-                { data: 'position_size' },
-                { data: 'net_pnl' },
-                { data: 'net_roi' },
-                { data: 'notes' }
+                {data: 'date'},
+                {data: 'stocks_above_20ma'},
+                {data: 'stocks_above_50ma'},
+                {data: 'stocks_above_200ma'}
             ],
         });
     });

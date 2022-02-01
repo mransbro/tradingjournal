@@ -1,21 +1,4 @@
 {% extends 'base.html' %}
 
-{% block content %}
 
-    <div class ="container">
-        <div class="row">
-            <div class="col-md-6 col-lg-6 mx-lg-auto mx-md-auto">
-                <h1 class="pt-5 pb-2">Welcome to your Trading Journal</h1>
-                    <p>Maybe put something here:</p>
-                
-                    <!-- links -->
-                    <p>You can <a href="{{ url_for('add_dailyjournal') }}">add daily routine</a></p>
-                    <p>You can <a href="{{ url_for('add_weeklyjournal') }}">add weekly routine</a></p>
-                    <p>You can <a href="{{ url_for('add_trade') }}">add a new trade</a></p>
-                    <p>Checkout the <a href="{{ url_for('dashboard') }}">dashboard</a></p>
-            </div>
-        </div>
-    </div>
-
-{% endblock %}
 
