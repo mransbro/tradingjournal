@@ -4,49 +4,48 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row pb-5">
-        <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
-            <h1 class="pt-5 pb-2">{{ title }}</h1>
+        {% if message %}
 
-            {% if message %}
+        <!-- the form was submitted and message exists -->
+        <p class="lead"><strong>{{ message }}</strong></p>
 
-            <!-- the form was submitted and message exists -->
-            <p class="lead"><strong>{{ message }}</strong></p>
+        <!-- links -->
+        <p><a href="{{ url_for('add_dailyroutine') }}">Submit another date.</a></p>
 
-            <!-- links -->
-            <p><a href="{{ url_for('add_dailyroutine') }}">Submit another date.</a></p>
+        <p><a href="{{ url_for('index') }}">Return to the index.</a></p>
 
-            <p><a href="{{ url_for('index') }}">Return to the index.</a></p>
+        {% else %}
+        <!-- the form is displayed when template opens via GET not POST -->
 
-            {% else %}
-            <!-- the form is displayed when template opens via GET not POST -->
+        <p class="lead alert alert-primary">Add a new date to the database.</p>
 
-            <p class="lead alert alert-primary">Add a new date to the database.</p>
+        <p class="ml-4"><a href="{{ url_for('index') }}">Return to the index.</a></p>
 
-            <p class="ml-4"><a href="{{ url_for('index') }}">Return to the index.</a></p>
+        <!-- show flash - based on WTForms validators
+                                            see https://pythonprogramming.net/flash-flask-tutorial/
+                                            get_flashed_messages() exists here because of flash()
+                                            in the route function
+                                            -->
+        {% with errors = get_flashed_messages() %}
+        {% if errors %}
+        {% for err in errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            {{ err }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <!-- end of flash -->
 
-            <!-- show flash - based on WTForms validators
-                            				 see https://pythonprogramming.net/flash-flask-tutorial/
-                            				 get_flashed_messages() exists here because of flash()
-                            				 in the route function
-                            				 -->
-            {% with errors = get_flashed_messages() %}
-            {% if errors %}
-            {% for err in errors %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                {{ err }}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-            <!-- end of flash -->
+        {% block form %}{{ render_form(form) }}{% endblock %}
 
-            {{ render_form(form) }}
-
+        {% block table %}
+        <div class="table-responsive">
             <table id='data' class='table table-striped'>
                 <thead>
                     <tr>
@@ -59,9 +58,10 @@
                 <tbody>
                 </tbody>
             </table>
-
-            {% endif %}
         </div>
+        {% endblock %}
+
+        {% endif %}
     </div>
 </div>
 

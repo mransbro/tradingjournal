@@ -151,20 +151,8 @@ class TradeForm(FlaskForm):
     )
     symbol = StringField("Symbol")
     position_size = IntegerField("Position Size ($)")
-    net_pnl = IntegerField(
-        "Net P&L ($)",
-        validators=[
-            InputRequired(),
-            NumberRange(min=0, max=10000, message="Invalid number"),
-        ],
-    )
-    net_roi = IntegerField(
-        "Net ROI (%)",
-        validators=[
-            InputRequired(),
-            NumberRange(min=0, max=100, message="Invalid number"),
-        ],
-    )
+    net_pnl = IntegerField("Net P&L ($)", validators=[InputRequired()])
+    net_roi = IntegerField("Net ROI (%)", validators=[InputRequired()])
     notes = StringField("Notes")
     submit = SubmitField("Submit")
 

@@ -90,13 +90,16 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <span data-feather="calendar"></span>
-                        This week
-                    </button>
                 </div>
             </div>
-{% block content %}{% endblock %}
+
+            {% block form%}{% endblock %}
+
+            {% block table %}{% endblock %}
+        </main>
+
+</div>
+
 
 
 <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

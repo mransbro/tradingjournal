@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 
-{% block title %}Trades{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 
 {% block content %}
@@ -44,22 +44,26 @@
             {% endwith %}
             <!-- end of flash -->
 
-            {{ render_form(form) }}
-
-            <table id='data' class='table table-striped'>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Symbol</th>
-                        <th>Position Size</th>
-                        <th>Net P&L</th>
-                        <th>Net ROI</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            {% block form %}{{ render_form(form) }}{% endblock %}
+            
+            {% block table %}
+            <div class="table-responsive">
+                <table id='data' class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Symbol</th>
+                            <th>Position Size</th>
+                            <th>Net P&L</th>
+                            <th>Net ROI</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
 
             {% endif %}
         </div>
