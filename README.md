@@ -24,6 +24,7 @@ Installing the app is easy:
 - Improve styling.
 - Deploy to Heroku or similar solution to run demo instance.
 - Add tests.
+- Import trades from csv
 
 ## License
 

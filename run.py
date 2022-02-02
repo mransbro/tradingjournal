@@ -1,5 +1,5 @@
 from app import app
-from app.app import create_db
+from app.tools import create_db
 import os
 import webbrowser
 from waitress import serve

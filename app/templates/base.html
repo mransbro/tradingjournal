@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}{{ title }}{% endblock %}</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/starter-template/">
     
+    <!-- Custom styles for this template -->
+    <link href="static/main.css" rel="stylesheet">
+
     <link type="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
     <!-- Bootstrap core CSS -->
@@ -28,25 +30,14 @@
     </style>
     
     
-    <!-- Custom styles for this template -->
-    <link href="main.css" rel="stylesheet">
+
 
     
 </head>
 <body>
 
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">Home</a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <div class="navbar-nav">
-        <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Sign out</a>
-        </div>
-    </div>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">Trading Journal</a>
 </header>
 
 <div class="container-fluid">
@@ -56,25 +47,21 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ url_for('dashboard') }}">
-                            <span data-feather="home"></span>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('add_dailyroutine') }}">
-                            <span data-feather="file"></span>
                             Daily Routine
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('add_weeklyroutine') }}">
-                            <span data-feather="shopping-cart"></span>
                             Weekly Routine
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('add_trade') }}">
-                            <span data-feather="users"></span>
                             Trades
                         </a>
                     </li>
@@ -88,8 +75,10 @@
                 <h1 class="h2">{{ title }}</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                        <form method="POST" enctype="multipart/form-data">
+                            <input type="file" name="file">
+                            <input type="submit" value=Upload>
+                        </form>
                     </div>
                 </div>
             </div>
