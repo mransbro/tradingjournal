@@ -19,12 +19,12 @@ Installing the app is easy:
 
 ## Roadmap
 
+- ~~Import trades from csv~~
 - Function to insert demo data into the DB.
-- Visulations on dashboard.
+- Visualisations on dashboard.
 - Improve styling.
 - Deploy to Heroku or similar solution to run demo instance.
 - Add tests.
-- Import trades from csv
 
 ## License
 

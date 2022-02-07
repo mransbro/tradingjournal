@@ -5,12 +5,10 @@
 
 {% block toolbar %}
 <div class="btn-toolbar mb-2 mb-md-0">
-    <div class="btn-group me-2">
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <input type="submit" value=Upload>
-        </form>
-    </div>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value=Upload>
+    </form>
 </div>
 {% endblock %}
 
