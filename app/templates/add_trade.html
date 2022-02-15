@@ -19,6 +19,7 @@
     <table id='data' class='table table-striped'>
         <thead>
             <tr>
+                <th>id</th>
                 <th>Date</th>
                 <th>Symbol</th>
                 <th>Position Size</th>
@@ -40,6 +41,7 @@
         $('#data').DataTable({
             ajax: '/api/trade',
             columns: [
+                { data: 'id' },
                 { data: 'date' },
                 { data: 'symbol' },
                 { data: 'position_size' },

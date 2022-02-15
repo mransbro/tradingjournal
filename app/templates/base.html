@@ -4,22 +4,31 @@
     <meta charset="utf-8">
     <title>{% block title %}{{ title }}{% endblock %}</title>
     
-    <!-- Custom styles for this template -->
-    <link href="static/main.css" rel="stylesheet">
+
 
     <link type="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
     
-
+    <!-- Custom styles for this template -->
+    <link href="static/main.css" rel="stylesheet">
 </head>
 
 <body>
 
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">Trading Journal</a>
+        <div class="dropdown">
+            <button onclick="myFunction()" class="dropbtn">Home</button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="/home">Home</a>
+                <a href="/add_trade">Trades</a>
+                <a href="add_dailyroutine">Daily Routine</a>
+                <a href="add_weeklyroutine">Weekly Routine</a>
+            </div>
+        </div>
     </header>
 
     <div class="container-fluid">
@@ -77,7 +86,21 @@
             $('#datepick').datetimepicker();
         });
     </script>
-
+    <script>
+    /* When the user clicks on the button,
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+    }
+    
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) { var openDropdown=dropdowns[i]; if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show'); } } } }
+    </script>
     {% block scripts %}{% endblock %}
 
 </body>
