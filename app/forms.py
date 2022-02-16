@@ -18,7 +18,7 @@ numberregex = "^[0-9]+$"
 
 class DailyForm(FlaskForm):
     id_field = HiddenField()
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     stocks_above_20ma = IntegerField(
         "Stocks above 20ma (%)",
         validators=[
@@ -44,7 +44,7 @@ class DailyForm(FlaskForm):
 
 
 class WeeklyForm(FlaskForm):
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     industry_groups = StringField("Record notable changes of industry groups")
     scans = BooleanField("Review weekly scans")
     watchlist = BooleanField("Review Watchlist")
@@ -54,7 +54,7 @@ class WeeklyForm(FlaskForm):
 
 
 class TradeForm(FlaskForm):
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     symbol = StringField(
         "Symbol",
         validators=[

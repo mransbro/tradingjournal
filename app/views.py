@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename
 from csv import reader
 from datetime import datetime
 
+dateformat = "%Y-%m-%d"
+
 
 @app.route("/")
 def index():
@@ -22,7 +24,7 @@ def add_dailyroutine():
     if form.validate_on_submit():
 
         record = DailyRoutine(
-            date=form.date.data,
+            date=datetime.strptime(form.date.data, dateformat),
             stocks_above_20ma=form.stocks_above_20ma.data,
             stocks_above_50ma=form.stocks_above_50ma.data,
             stocks_above_200ma=form.stocks_above_200ma.data,
@@ -54,7 +56,7 @@ def add_weeklyroutine():
     if form.validate_on_submit():
 
         record = WeeklyRoutine(
-            date=form.date.data,
+            date=datetime.strptime(form.date.data, dateformat),
             industry_groups=form.industry_groups.data,
             scans=form.scans.data,
             watchlist=form.watchlist.data,
@@ -88,7 +90,7 @@ def add_trade():
     if form.validate_on_submit():
 
         record = Trade(
-            date=form.date.data,
+            date=datetime.strptime(form.date.data, dateformat),
             symbol=form.symbol.data.upper(),
             position_size=form.position_size.data,
             net_pnl=form.net_pnl.data,
