@@ -96,8 +96,12 @@ def add_trade():
         buy_price = form.buy_price.data
         sell_price = form.sell_price.data
         position_size = round(num_shares * buy_price, 2)
-        net_pnl = round((num_shares * sell_price) - position_size, 2)
-        net_roi = round(net_pnl / position_size * 100, 2)
+        if sell_price == 0:
+            net_pnl = 0
+            net_roi = 0
+        else:
+            net_pnl = round((num_shares * sell_price) - position_size, 2)
+            net_roi = round(net_pnl / position_size * 100, 2)
 
         record = Trade(
             date=date,

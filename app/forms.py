@@ -1,3 +1,4 @@
+from email.policy import default
 from wtforms import (
     StringField,
     SubmitField,
@@ -64,6 +65,6 @@ class TradeForm(FlaskForm):
     )
     num_shares = FloatField("No. of Shares")
     buy_price = FloatField("Buy Price")
-    sell_price = FloatField("Sell Price")
+    sell_price = FloatField("Sell Price", default=0)
     notes = StringField("Notes")
     submit = SubmitField("Submit")

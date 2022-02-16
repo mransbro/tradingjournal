@@ -48,7 +48,7 @@ class Trade(db.Model):
     num_shares = db.Column(db.Float, nullable=False)
     buy_price = db.Column(db.Float, nullable=False)
     position_size = db.Column(db.Float, nullable=False)
-    sell_price = db.Column(db.Float, nullable=True)
+    sell_price = db.Column(db.Float, default=0)
     net_pnl = db.Column(db.Float, default=0)
     net_roi = db.Column(db.Float, default=0)
     notes = db.Column(db.Text, default="")
