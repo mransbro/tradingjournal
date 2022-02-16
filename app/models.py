@@ -45,9 +45,12 @@ class Trade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, unique=False, nullable=False)
     symbol = db.Column(db.String, nullable=False)
-    position_size = db.Column(db.Integer, nullable=False)
-    net_pnl = db.Column(db.Integer, default=0)
-    net_roi = db.Column(db.Integer, default=0)
+    num_shares = db.Column(db.Float, nullable=False)
+    buy_price = db.Column(db.Float, nullable=False)
+    position_size = db.Column(db.Float, nullable=False)
+    sell_price = db.Column(db.Float, nullable=True)
+    net_pnl = db.Column(db.Float, default=0)
+    net_roi = db.Column(db.Float, default=0)
     notes = db.Column(db.Text, default="")
 
     def to_dict(self):
@@ -55,7 +58,10 @@ class Trade(db.Model):
             "id": self.id,
             "date": self.date.strftime(dateformat),
             "symbol": self.symbol,
+            "num_shares": self.num_shares,
+            "buy_price": self.buy_price,
             "position_size": self.position_size,
+            "sell_price": self.sell_price,
             "net_pnl": self.net_pnl,
             "net_roi": self.net_roi,
             "notes": self.notes,

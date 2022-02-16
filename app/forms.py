@@ -4,7 +4,7 @@ from wtforms import (
     IntegerField,
     HiddenField,
     BooleanField,
-    DateField,
+    FloatField,
 )
 from wtforms.validators import InputRequired, NumberRange, Regexp
 from flask_wtf import FlaskForm
@@ -62,8 +62,8 @@ class TradeForm(FlaskForm):
             Regexp(letterregex, message="Invalid symbol format"),
         ],
     )
-    position_size = IntegerField("Position Size ($)")
-    net_pnl = IntegerField("Net P&L ($)")
-    net_roi = IntegerField("Net ROI (%)")
+    num_shares = FloatField("No. of Shares")
+    buy_price = FloatField("Buy Price")
+    sell_price = FloatField("Sell Price")
     notes = StringField("Notes")
     submit = SubmitField("Submit")

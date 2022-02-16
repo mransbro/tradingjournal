@@ -1,4 +1,5 @@
 from crypt import methods
+from turtle import position
 from . import app, db
 from .tools import allowed_file
 from .models import WeeklyRoutine, DailyRoutine, Trade
@@ -82,28 +83,38 @@ def add_weeklyroutine():
     return render_template("add_weeklyroutine.html", form=form, title="Weekly Routine")
 
 
-@app.route("/add_trade", methods=["GET"])
+@app.route("/add_trade", methods=["GET", "POST"])
 def add_trade():
 
     form = TradeForm()
 
     if form.validate_on_submit():
 
+        date = datetime.strptime(form.date.data, dateformat)
+        symbol = form.symbol.data.upper()
+        num_shares = form.num_shares.data
+        buy_price = form.buy_price.data
+        sell_price = form.sell_price.data
+        position_size = round(num_shares * buy_price, 2)
+        net_pnl = round((num_shares * sell_price) - position_size, 2)
+        net_roi = round(net_pnl / position_size * 100, 2)
+
         record = Trade(
-            date=datetime.strptime(form.date.data, dateformat),
-            symbol=form.symbol.data.upper(),
-            position_size=form.position_size.data,
-            net_pnl=form.net_pnl.data,
-            net_roi=form.net_roi.data,
+            date=date,
+            symbol=symbol,
+            num_shares=num_shares,
+            buy_price=buy_price,
+            sell_price=sell_price,
+            position_size=position_size,
+            net_pnl=net_pnl,
+            net_roi=net_roi,
             notes=form.notes.data,
         )
 
         db.session.add(record)
         db.session.commit()
 
-        message = f"The data for {record.symbol} has been updated"
-
-        return render_template("add_trade.html", message=message, form=form)
+        return redirect(url_for("add_trade"))
 
     else:
         for field, errors in form.errors.items():
@@ -148,33 +159,3 @@ def handle_404(e):
 @app.errorhandler(500)
 def handle_500(e):
     return "500", 500
-
-
-@app.route("/add_trade", methods=["POST"])
-def upload():
-
-    file = request.files["file"]
-
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(file.filename)
-
-    with open(filename) as file:
-        data = reader(file)
-        trades = list(data)
-
-    for trade in trades[1:]:
-        record = Trade(
-            date=datetime.strptime(trade[0], "%Y-%m-%d"),
-            symbol=trade[1],
-            position_size=trade[2],
-            net_pnl=trade[3],
-            net_roi=trade[4],
-            notes=trade[5],
-        )
-
-        db.session.add(record)
-        db.session.commit()
-        # message = "Csv file has been uploaded"
-
-    return redirect(url_for("add_trade"))
