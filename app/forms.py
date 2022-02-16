@@ -1,10 +1,11 @@
+from email.policy import default
 from wtforms import (
     StringField,
     SubmitField,
     IntegerField,
     HiddenField,
     BooleanField,
-    DateField,
+    FloatField,
 )
 from wtforms.validators import InputRequired, NumberRange, Regexp
 from flask_wtf import FlaskForm
@@ -18,7 +19,7 @@ numberregex = "^[0-9]+$"
 
 class DailyForm(FlaskForm):
     id_field = HiddenField()
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     stocks_above_20ma = IntegerField(
         "Stocks above 20ma (%)",
         validators=[
@@ -44,7 +45,7 @@ class DailyForm(FlaskForm):
 
 
 class WeeklyForm(FlaskForm):
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     industry_groups = StringField("Record notable changes of industry groups")
     scans = BooleanField("Review weekly scans")
     watchlist = BooleanField("Review Watchlist")
@@ -54,7 +55,7 @@ class WeeklyForm(FlaskForm):
 
 
 class TradeForm(FlaskForm):
-    date = DateField(id="datepick", format="%Y-%m-%d")
+    date = StringField(id="datepick", validators=[Regexp(dateregex)])
     symbol = StringField(
         "Symbol",
         validators=[
@@ -62,8 +63,8 @@ class TradeForm(FlaskForm):
             Regexp(letterregex, message="Invalid symbol format"),
         ],
     )
-    position_size = IntegerField("Position Size ($)")
-    net_pnl = IntegerField("Net P&L ($)")
-    net_roi = IntegerField("Net ROI (%)")
+    num_shares = FloatField("No. of Shares")
+    buy_price = FloatField("Buy Price")
+    sell_price = FloatField("Sell Price", default=0)
     notes = StringField("Notes")
     submit = SubmitField("Submit")
