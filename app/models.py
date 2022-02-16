@@ -1,4 +1,7 @@
 from . import db
+from datetime import datetime
+
+dateformat = "%Y-%m-%d"
 
 
 class DailyRoutine(db.Model):
@@ -10,7 +13,7 @@ class DailyRoutine(db.Model):
 
     def to_dict(self):
         return {
-            "date": self.date,
+            "date": self.date.strftime(dateformat),
             "stocks_above_20ma": self.stocks_above_20ma,
             "stocks_above_50ma": self.stocks_above_50ma,
             "stocks_above_200ma": self.stocks_above_200ma,
@@ -28,7 +31,7 @@ class WeeklyRoutine(db.Model):
 
     def to_dict(self):
         return {
-            "date": self.date,
+            "date": self.date.strftime(dateformat),
             "industry_groups": self.industry_groups,
             "scans": self.scans,
             "watchlist": self.watchlist,
@@ -50,7 +53,7 @@ class Trade(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "date": self.date,
+            "date": self.date.strftime(dateformat),
             "symbol": self.symbol,
             "position_size": self.position_size,
             "net_pnl": self.net_pnl,

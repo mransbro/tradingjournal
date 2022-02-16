@@ -38,7 +38,7 @@
 {% block scripts %}
 <script>
     $(document).ready(function () {
-        $('#data').DataTable({
+        var table = $('#data').DataTable({
             ajax: '/api/trade',
             columns: [
                 { data: 'id' },
