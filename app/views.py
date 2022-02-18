@@ -19,6 +19,9 @@ def index():
 
 @app.route("/add_dailyroutine", methods=["GET", "POST"])
 def add_dailyroutine():
+    """
+    Return exisiting and add new daily routine entries.
+    """
 
     form = DailyForm()
 
@@ -49,8 +52,21 @@ def add_dailyroutine():
     return render_template("add_dailyroutine.html", form=form, title="Daily Routine")
 
 
+@app.route("/add_dailyroutine/data")
+def daily_data():
+    """
+    Return daily routine table data.
+    """
+    return {
+        "data": [dailyroutine.to_dict() for dailyroutine in DailyRoutine.query.all()]
+    }
+
+
 @app.route("/add_weeklyroutine", methods=["GET", "POST"])
 def add_weeklyroutine():
+    """
+    Return exisiting and add new weekly routine entries.
+    """
 
     form = WeeklyForm()
 
@@ -83,8 +99,21 @@ def add_weeklyroutine():
     return render_template("add_weeklyroutine.html", form=form, title="Weekly Routine")
 
 
+@app.route("/add_weeklyroutine/data")
+def weekly_data():
+    """
+    Return weekly routine table data.
+    """
+    return {
+        "data": [weeklyroutine.to_dict() for weeklyroutine in WeeklyRoutine.query.all()]
+    }
+
+
 @app.route("/add_trade", methods=["GET", "POST"])
 def add_trade():
+    """
+    Return exisiting and add new trades.
+    """
 
     form = TradeForm()
 
@@ -131,35 +160,35 @@ def add_trade():
     return render_template("add_trade.html", form=form, title="Trades")
 
 
-@app.route("/api/trade")
+@app.route("/add_trade/data")
 def trade_data():
+    """
+    Return trade table data.
+    """
+
     return {"data": [trade.to_dict() for trade in Trade.query.all()]}
-
-
-@app.route("/api/daily")
-def daily_data():
-    return {
-        "data": [dailyroutine.to_dict() for dailyroutine in DailyRoutine.query.all()]
-    }
-
-
-@app.route("/api/weekly")
-def weekly_data():
-    return {
-        "data": [weeklyroutine.to_dict() for weeklyroutine in WeeklyRoutine.query.all()]
-    }
 
 
 @app.route("/dashboard")
 def dashboard():
+    """
+    Return dashboard page.
+    """
+
     return render_template("dashboard.html", title="Dashboard")
 
 
 @app.errorhandler(404)
 def handle_404(e):
+    """
+    Return a 404 error page.
+    """
     return "404", 404
 
 
 @app.errorhandler(500)
 def handle_500(e):
+    """
+    Return a 500 error page.
+    """
     return "500", 500
