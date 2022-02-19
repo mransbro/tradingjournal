@@ -42,6 +42,7 @@ class DailyForm(FlaskForm):
         ],
     )
     submit = SubmitField("Submit")
+    update = SubmitField("Update")
 
 
 class WeeklyForm(FlaskForm):
@@ -52,9 +53,11 @@ class WeeklyForm(FlaskForm):
     focuslist = BooleanField("Create Focuslist")
     open_positions = BooleanField("Open positions")
     submit = SubmitField("Submit")
+    update = SubmitField("Update")
 
 
 class TradeForm(FlaskForm):
+    id = IntegerField("id")
     date = StringField(id="datepick", validators=[Regexp(dateregex)])
     symbol = StringField(
         "Symbol",
@@ -68,3 +71,4 @@ class TradeForm(FlaskForm):
     sell_price = FloatField("Sell Price", default=0)
     notes = StringField("Notes")
     submit = SubmitField("Submit")
+    update = SubmitField("Update")

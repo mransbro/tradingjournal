@@ -160,22 +160,41 @@ def add_trade():
     return render_template("add_trade.html", form=form, title="Trades")
 
 
-@app.route("/add_trade/data")
+@app.route("/update_trade", methods=["GET", "POST"])
+def update_trade():
+    """
+    Update an exiting trade in the database.
+    """
+    form = TradeForm()
+
+    company_info = Company.query.get(comp_id)
+
+    new_data = {k: v for k, v in form_data.items() if v is not None}
+
+    company_info.update(**new_data)
+    if True:
+        try:
+            db.session.commit()
+            flash("id updated succesfully")
+            return redirect(url_for("add_trade"))
+        except:
+            flash("Error!  Looks like there was a problem...try again!")
+            return render_template(
+                "add_trade.html", form=form, id_to_update=id_to_update, id=id
+            )
+    else:
+        return render_template(
+            "add_trade.html", form=form, id_to_update=id_to_update, id=id
+        )
+
+
+@app.route("/trades/data")
 def trade_data():
     """
     Return trade table data.
     """
 
     return {"data": [trade.to_dict() for trade in Trade.query.all()]}
-
-
-@app.route("/dashboard")
-def dashboard():
-    """
-    Return dashboard page.
-    """
-
-    return render_template("dashboard.html", title="Dashboard")
 
 
 @app.errorhandler(404)

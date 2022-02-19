@@ -14,10 +14,21 @@
                 <a class="navbar-brand" href="/">Trading Journal</a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_trade') }}">Trades</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_dailyroutine') }}">Daily Routine</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_weeklyroutine') }}">Weekly Routine</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">Trades</a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('add_trade') }}">Add</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('update_trade') }}">Update</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Routines</a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('add_dailyroutine') }}">Daily</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('add_weeklyroutine') }}">Weekly</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -41,6 +52,7 @@
 
 
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>

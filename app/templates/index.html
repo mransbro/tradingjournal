@@ -2,3 +2,47 @@
 
 
 
+{% block table %}
+<div class="table-responsive">
+    <table id='data' class='table table-striped'>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>No. of Shares</th>
+                <th>Buy Price $</th>
+                <th>Position Size $</th>
+                <th>Sell Price $</th>
+                <th>Profit/Loss $</th>
+                <th>ROI %</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        var table = $('#data').DataTable({
+            ajax: '/trades/data',
+            columns: [
+                { data: 'id' },
+                { data: 'date' },
+                { data: 'symbol' },
+                { data: 'num_shares' },
+                { data: 'buy_price' },
+                { data: 'position_size' },
+                { data: 'sell_price' },
+                { data: 'net_pnl' },
+                { data: 'net_roi' },
+                { data: 'notes' }
+            ],
+        });
+    });
+</script>
+{% endblock %}
