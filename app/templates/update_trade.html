@@ -12,6 +12,14 @@
 
 {% block form %}
 
+<div class>
+    <form>
+        <label for="id">Enter trade id:</label><br>
+        <input type="text" id="id" name="id">
+    </form>
+</div>
+
+
 <div class="shadow p-3 mb-5 bg-body rounded">
     <form method="POST">
         {{ form.hidden_tag() }}

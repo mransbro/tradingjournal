@@ -1,11 +1,74 @@
 {% extends 'base.html' %}
 
 
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+
+<div style="width:100%;" class="row">
+    <div class="my-4 col"><canvas id="piechart" style="width:100%; height:400px;"></canvas></div>
+    <div class="my-4 col"><canvas id="barchart" style="width:100%; height:400px;"></canvas></div>
+</div>
+
+<script>
+    var ctx = document.getElementById("piechart").getContext("2d")
+    var piechart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: {{ winloss_labels | safe }},
+            datasets: [
+                {
+                    label: "Win/Loss ratio",
+                    data: {{ winloss_values | safe  }},
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 99, 132)'
+                    ],
+                }
+            ]
+        },
+        options: {
+            responsive: false
+        }
+    });
+</script>
+<script>
+    var ctx = document.getElementById("barchart").getContext("2d")
+    var barchart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: {{ latest_labels | safe }},
+            datasets: [
+                {
+                    label: 'Lastest trade performance',
+                    data: {{ latest_values | safe }},
+                    backgroundColor: [
+                        'rgb(250, 250, 110)',
+                        'rgb(196, 236, 116)',
+                        'rgb(146, 220, 126)',
+                        'rgb(100, 201, 135)',
+                        'rgb(57, 180, 142)',
+                        'rgb(8, 159, 143)',
+                        'rgb(0, 137, 138)',
+                        'rgb(8, 115, 127)',
+                        'rgb(33, 93, 110)',
+                        'rgb(42, 72, 88)'
+                    ]
+
+                }
+            ]
+        },
+        options: {
+            responsive: false
+        }
+    });
+</script>
+{% endblock %}
+
 
 {% block table %}
 <div class="table-responsive">
     <table id='data' class='table table-striped'>
-        <thead>
+        <thead class="thead-dark">
             <tr>
                 <th>id</th>
                 <th>Date</th>
@@ -45,4 +108,5 @@
         });
     });
 </script>
+
 {% endblock %}

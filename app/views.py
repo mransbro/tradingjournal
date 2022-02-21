@@ -8,13 +8,36 @@ from flask import render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from csv import reader
 from datetime import datetime
+from sqlalchemy import desc
 
 dateformat = "%Y-%m-%d"
 
 
 @app.route("/")
 def index():
-    return render_template("index.html", title="Trading Journal")
+    """
+    Return the homepaege.
+    """
+    trades = Trade.query.all()
+    latesttrades = Trade.query.order_by(desc(Trade.date)).limit(10).all()
+
+    latest_labels = [trade.date.strftime(dateformat) for trade in latesttrades]
+    latest_values = [trade.net_roi for trade in latesttrades]
+
+    roidata = [trade.net_roi for trade in trades]
+    wins = len([win for win in roidata if win > 0])
+    loses = len(roidata) - wins
+    winloss_labels = ["win", "loss"]
+    winloss_values = [wins, loses]
+
+    return render_template(
+        "index.html",
+        title="Trading Journal",
+        winloss_labels=winloss_labels,
+        winloss_values=winloss_values,
+        latest_labels=latest_labels,
+        latest_values=latest_values,
+    )
 
 
 @app.route("/add_dailyroutine", methods=["GET", "POST"])
@@ -165,27 +188,8 @@ def update_trade():
     """
     Update an exiting trade in the database.
     """
-    form = TradeForm()
 
-    company_info = Company.query.get(comp_id)
-
-    new_data = {k: v for k, v in form_data.items() if v is not None}
-
-    company_info.update(**new_data)
-    if True:
-        try:
-            db.session.commit()
-            flash("id updated succesfully")
-            return redirect(url_for("add_trade"))
-        except:
-            flash("Error!  Looks like there was a problem...try again!")
-            return render_template(
-                "add_trade.html", form=form, id_to_update=id_to_update, id=id
-            )
-    else:
-        return render_template(
-            "add_trade.html", form=form, id_to_update=id_to_update, id=id
-        )
+    return "404"
 
 
 @app.route("/trades/data")
