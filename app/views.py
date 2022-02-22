@@ -4,11 +4,12 @@ from . import app, db
 from .tools import allowed_file
 from .models import WeeklyRoutine, DailyRoutine, Trade
 from .forms import DailyForm, WeeklyForm, TradeForm
-from flask import render_template, flash, request, redirect, url_for
+from flask import render_template, flash, request, redirect, url_for, abort
 from werkzeug.utils import secure_filename
 from csv import reader
 from datetime import datetime
 from sqlalchemy import desc
+import os
 
 dateformat = "%Y-%m-%d"
 
@@ -181,6 +182,63 @@ def add_trade():
                 )
 
     return render_template("add_trade.html", form=form, title="Trades")
+
+
+@app.route("/trade/import", methods=["GET", "POST"])
+def import_trade():
+    """
+    Return page used to import trades from a CSV file.
+    """
+
+    if request.method == "POST":
+
+        if "file" not in request.files:
+            flash("No file part", "warning")
+            return redirect(request.url)
+
+        file = request.files["file"]
+
+        if file.filename == "":
+            flash("No selected file", "warning")
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+
+        with open(filename) as file:
+            data = reader(file)
+            trades = list(data)
+
+        for trade in trades[1:]:
+
+            num_shares = float(trade[2])
+            buy_price = float(trade[3])
+            sell_price = float(trade[4])
+
+            position_size = round(num_shares * buy_price, 2)
+            net_pnl = round((num_shares * sell_price) - position_size, 2)
+            net_roi = round(net_pnl / position_size * 100, 2)
+
+            record = Trade(
+                date=datetime.strptime(trade[0], "%Y-%m-%d"),
+                symbol=trade[1].upper(),
+                num_shares=num_shares,
+                buy_price=buy_price,
+                sell_price=sell_price,
+                position_size=position_size,
+                net_pnl=net_pnl,
+                net_roi=net_roi,
+                notes=trade[5],
+            )
+
+            db.session.add(record)
+            db.session.commit()
+        flash("Trades have been imported from the CSV file", "info")
+        return render_template("import_trade.html")
+
+    return render_template("import_trade.html")
 
 
 @app.route("/update_trade", methods=["GET", "POST"])

@@ -21,10 +21,10 @@ Installing the app is easy:
 
 - ~~Import trades from csv~~
 - Function to insert demo data into the DB.
-- Visualisations on dashboard.
+- ~~Visualisations on dashboard.~~
 - Improve styling.
 - Deploy to Heroku or similar solution to run demo instance.
-- Add tests.
+- Add tests & logging
 
 ## License
 

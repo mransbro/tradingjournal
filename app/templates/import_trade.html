@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+
+
+
+<div class="card mb-3" id="import-card">
+    <h4 class="card-header">Import instructions</h4>
+    <div class="card-body">
+        <p class="card-text">The trades must be saved in CSV format.</p>
+        <p class="card-text">Max file size of 1MB.</p>
+        <div class="mb-3">
+            <form method="post" enctype="multipart/form-data">
+                <p><input type="file" name=file class="form-control-file"></p>
+                <p><input type="submit" class="btn btn-primary" value="Upload"></p>
+            </form>
+            {% for category, message in get_flashed_messages(with_categories=True) %}
+                <div class="alert alert-{{category}}" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
