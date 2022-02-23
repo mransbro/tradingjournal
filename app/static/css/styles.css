@@ -64,7 +64,7 @@
     rgba(255, 255, 255, 0)
   );
   --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-body-font-size: 1rem;
+  --bs-body-font-size: 0.8rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
   --bs-body-color: #212529;
@@ -11653,4 +11653,8 @@ fieldset:disabled .btn {
   .d-print-none {
     display: none !important;
   }
+}
+
+#import-card {
+  margin-top: 70px;
 }

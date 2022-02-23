@@ -83,30 +83,33 @@
             </tr>
         </thead>
         <tbody>
+        {% for trade in trades %}
+                <tr>
+                    <td>{{ trade.id }}</td>
+                    <td>{{ trade.date }}</td>
+                    <td>{{ trade.symbol }}</td>
+                    <td>{{ trade.num_shares }}</td>
+                    <td>{{ trade.buy_price }}</td>
+                    <td>{{ trade.position_size }}</td>
+                    <td>{{ trade.sell_price }}</td>
+                    <td>{{ trade.net_pnl }}</td>
+                    <td>{{ trade.net_roi }}</td>
+                    <td>{{ trade.notes }}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
+                                <input type="hidden" name="id" value="{{ trade.id }}">
+                                <input type="submit" class="btn btn-sm btn-danger" value="Delete">
+                            </form>
+                            <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}" role="button">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script>
-    $(document).ready(function () {
-        var table = $('#data').DataTable({
-            ajax: '/trades/data',
-            columns: [
-                { data: 'id' },
-                { data: 'date' },
-                { data: 'symbol' },
-                { data: 'num_shares' },
-                { data: 'buy_price' },
-                { data: 'position_size' },
-                { data: 'sell_price' },
-                { data: 'net_pnl' },
-                { data: 'net_roi' },
-                { data: 'notes' }
-            ],
-        });
-    });
-</script>
-
 {% endblock %}
