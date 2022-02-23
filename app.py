@@ -1,5 +1,6 @@
 from app import app
 from app.tools import create_db
+from os import environ
 from os.path import exists
 import webbrowser
 from waitress import serve
@@ -12,8 +13,9 @@ def main():
         print("Database initialized")
 
     # auto-open the application
-    webbrowser.open("http://0.0.0.0:8080/")
-    serve(app, port=8080)
+    # webbrowser.open("http://0.0.0.0:8080/")
+    port = int(environ.get("PORT", 8080))
+    serve(app, port=port)
 
 
 if __name__ == "__main__":
