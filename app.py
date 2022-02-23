@@ -1,5 +1,6 @@
+import csv
 from app import app
-from app.tools import create_db
+from app.tools import create_db, csv_import
 from os.path import exists
 
 
@@ -8,6 +9,7 @@ def main():
     if not exists("./app/journal.db"):
         create_db()
         print("Database initialized")
+        csv_import()
 
     app.run(host="0.0.0.0")
 
