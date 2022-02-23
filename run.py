@@ -1,14 +1,13 @@
 from app import app
 from app.tools import create_db
-import os
+from os.path import exists
 import webbrowser
 from waitress import serve
 
 
 def main():
     # initialize database if it doesn't exist
-    current_path = os.path.dirname(os.path.realpath(__file__))
-    if not os.path.exists(os.path.join(current_path, "journal.db")):
+    if not exists("./app/journal.db"):
         create_db()
         print("Database initialized")
 

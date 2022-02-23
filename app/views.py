@@ -1,10 +1,10 @@
 from crypt import methods
 from turtle import position
 from . import app, db
-from .tools import allowed_file
+from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade
 from .forms import DailyForm, WeeklyForm, TradeForm
-from flask import render_template, flash, request, redirect, url_for, abort
+from flask import render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from csv import reader
 from datetime import datetime
@@ -42,7 +42,7 @@ def index():
     )
 
 
-@app.route("/add_dailyroutine", methods=["GET", "POST"])
+@app.route("/dailyroutine/add", methods=["GET", "POST"])
 def add_dailyroutine():
     """
     Return exisiting and add new daily routine entries.
@@ -77,7 +77,7 @@ def add_dailyroutine():
     return render_template("add_dailyroutine.html", form=form, title="Daily Routine")
 
 
-@app.route("/add_dailyroutine/data")
+@app.route("/dailyroutine/data")
 def daily_data():
     """
     Return daily routine table data.
@@ -87,7 +87,7 @@ def daily_data():
     }
 
 
-@app.route("/add_weeklyroutine", methods=["GET", "POST"])
+@app.route("/weeklyroutine/add", methods=["GET", "POST"])
 def add_weeklyroutine():
     """
     Return exisiting and add new weekly routine entries.
@@ -124,7 +124,7 @@ def add_weeklyroutine():
     return render_template("add_weeklyroutine.html", form=form, title="Weekly Routine")
 
 
-@app.route("/add_weeklyroutine/data")
+@app.route("/weeklyroutine/data")
 def weekly_data():
     """
     Return weekly routine table data.
@@ -193,49 +193,17 @@ def import_trade():
 
     if request.method == "POST":
 
-        if "file" not in request.files:
+        if "file" not in request.files or request.files["file"] == "":
             flash("No file part", "warning")
             return redirect(request.url)
 
         file = request.files["file"]
 
-        if file.filename == "":
-            flash("No selected file", "warning")
-            return redirect(request.url)
-
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-        with open(filename) as file:
-            data = reader(file)
-            trades = list(data)
-
-        for trade in trades[1:]:
-
-            num_shares = float(trade[2])
-            buy_price = float(trade[3])
-            sell_price = float(trade[4])
-
-            position_size = round(num_shares * buy_price, 2)
-            net_pnl = round((num_shares * sell_price) - position_size, 2)
-            net_roi = round(net_pnl / position_size * 100, 2)
-
-            record = Trade(
-                date=datetime.strptime(trade[0], "%Y-%m-%d"),
-                symbol=trade[1].upper(),
-                num_shares=num_shares,
-                buy_price=buy_price,
-                sell_price=sell_price,
-                position_size=position_size,
-                net_pnl=net_pnl,
-                net_roi=net_roi,
-                notes=trade[5],
-            )
-
-            db.session.add(record)
-            db.session.commit()
+        csv_import(filename)
 
         flash("Trades have been imported from the CSV file", "info")
 
