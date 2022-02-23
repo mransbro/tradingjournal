@@ -14,8 +14,9 @@ def main():
 
     # auto-open the application
     # webbrowser.open("http://0.0.0.0:8080/")
-    port = int(environ.get("PORT", 8080))
-    serve(app, port=port)
+    # port = int(environ.get("PORT", 8080))
+    # serve(app, port=port)
+    app.run(host="0.0.0.0")
 
 
 if __name__ == "__main__":
