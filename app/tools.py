@@ -13,7 +13,6 @@ def allowed_file(filename):
 # initialize database
 def create_db():
     db.create_all()
-    csv_import()
 
 
 def csv_import(file="./sample_trades.csv"):
