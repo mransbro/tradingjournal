@@ -2,7 +2,7 @@
 
 A simple trade journal and market review app built with Python Flask.
 
-![home](https://github.com/mransbro/tradingjournal/raw/master/img/homepage.png)
+![home](https://github.com/mransbro/tradingjournal/blob/main/img/homepage.png)
 
 ## Installation
 
