@@ -1,4 +1,3 @@
-from email.policy import default
 from wtforms import (
     StringField,
     SubmitField,

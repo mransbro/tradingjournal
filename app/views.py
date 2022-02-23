@@ -1,12 +1,9 @@
-from crypt import methods
-from turtle import position
 from . import app, db
 from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade
 from .forms import DailyForm, WeeklyForm, TradeForm
 from flask import render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
-from csv import reader
 from datetime import datetime
 from sqlalchemy import desc
 import os
