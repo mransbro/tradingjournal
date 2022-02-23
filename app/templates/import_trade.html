@@ -7,10 +7,22 @@
 
 
 <div class="card mb-3" id="import-card">
-    <h4 class="card-header">Import instructions</h4>
+    <h4 class="card-header">Import Instructions</h4>
     <div class="card-body">
-        <p class="card-text">The trades must be saved in CSV format.</p>
-        <p class="card-text">Max file size of 1MB.</p>
+        <p class="card-text">The trades must be saved in CSV format and a max file size of 1MB.</p>
+        <p class="card-text">The data format looks like the following:<br>
+            <br>
+            <b>date,symbol,num_shares,buy_price,sell_price,notes</b><br>
+            2021-01-14,KPTI,5,452,448,<br>
+            2021-01-27,INSG,310.23984,12.48,13.24,<br>
+            <br>
+            A few notes about this data format:<br>
+            <ul>
+            <li>Date: must be yyy-mm-dd form-data.</li>
+            <li>Data should be comma delimited.</li>
+            <li>The rows should be in the order shown.</li>
+            </ul>
+        </p>
         <div class="mb-3">
             <form method="post" enctype="multipart/form-data">
                 <p><input type="file" name=file class="form-control-file"></p>

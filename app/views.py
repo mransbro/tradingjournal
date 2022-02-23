@@ -38,6 +38,7 @@ def index():
         winloss_values=winloss_values,
         latest_labels=latest_labels,
         latest_values=latest_values,
+        trades=trades,
     )
 
 
@@ -133,7 +134,7 @@ def weekly_data():
     }
 
 
-@app.route("/add_trade", methods=["GET", "POST"])
+@app.route("/trade/add", methods=["GET", "POST"])
 def add_trade():
     """
     Return exisiting and add new trades.
@@ -235,28 +236,81 @@ def import_trade():
 
             db.session.add(record)
             db.session.commit()
+
         flash("Trades have been imported from the CSV file", "info")
+
         return render_template("import_trade.html")
 
     return render_template("import_trade.html")
 
 
-@app.route("/update_trade", methods=["GET", "POST"])
-def update_trade():
+@app.route("/trade/update/<id>", methods=["GET", "POST"])
+def update_trade(id):
+    """
+    Update an existing trade in the database.
+    """
+
+    trade = Trade.query.filter_by(id=id).first()
+    form = TradeForm(obj=trade)
+
+    if form.validate_on_submit():
+
+        try:
+            trade.date = datetime.strptime(form.date.data, dateformat)
+            trade.symbol = form.symbol.data.upper()
+            trade.num_shares = form.num_shares.data
+            trade.buy_price = form.buy_price.data
+            trade.sell_price = form.sell_price.data
+            trade.position_size = round(form.num_shares.data * form.buy_price.data, 2)
+
+            if form.sell_price.data == 0:
+                trade.net_pnl = 0
+                trade.net_roi = 0
+
+            else:
+                trade.net_pnl = round(
+                    (form.num_shares.data * form.sell_price.data) - trade.position_size,
+                    2,
+                )
+                trade.net_roi = round(trade.net_pnl / trade.position_size * 100, 2)
+
+            db.session.add(trade)
+            db.session.commit()
+            flash("Saved successfully", "success")
+
+        except:
+            db.session.rollback()
+            flash("Error updating trade.", "danger")
+
+    return render_template("update_trade.html", form=form)
+
+
+@app.route("/trade/delete", methods=["POST"])
+def delete_trade():
     """
     Update an exiting trade in the database.
     """
 
-    return "404"
+    try:
+        trade = Trade.query.filter_by(id=request.form["id"]).first()
+        db.session.delete(trade)
+        db.session.commit()
+        flash("Delete successful.", "danger")
+
+    except:
+        db.session.rollback()
+        flash("Error deleting trade.", "danger")
+
+    return redirect(url_for("index"))
 
 
-@app.route("/trades/data")
-def trade_data():
-    """
-    Return trade table data.
-    """
-
-    return {"data": [trade.to_dict() for trade in Trade.query.all()]}
+# @app.route("/trade/data")
+# def trade_data():
+#    """
+#    Return trade table data.
+#    """
+#
+#    return {"data": [trade.to_dict() for trade in Trade.query.all()]}
 
 
 @app.errorhandler(404)

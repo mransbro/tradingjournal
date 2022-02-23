@@ -3,23 +3,9 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% for message in get_flashed_messages() %}
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
+
 
 {% block form %}
-
-<div class>
-    <form>
-        <label for="id">Enter trade id:</label><br>
-        <input type="text" id="id" name="id">
-    </form>
-</div>
-
-
 <div class="shadow p-3 mb-5 bg-body rounded">
     <form method="POST">
         {{ form.hidden_tag() }}
@@ -55,16 +41,16 @@
         <br />
 
         {{ form.submit(class="btn btn-primary") }}
-
-
     </form>
-
-
 </div>
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
 
 {% endblock %}
 
-{% block table %}{% endblock %}
 
-
-{% block scripts %}{% endblock %}
