@@ -8,7 +8,6 @@ def main():
     # initialize database if it doesn't exist
     if not exists("./app/journal.db"):
         create_db()
-        print("Database initialized")
 
     app.run(host="0.0.0.0")
 

@@ -20,7 +20,7 @@ def create_tables():
 @app.route("/")
 def index():
     """
-    Return the homepaege.
+    Return the homepage.
     """
     trades = Trade.query.all()
     latesttrades = Trade.query.order_by(desc(Trade.date)).limit(10).all()
