@@ -28,9 +28,6 @@
                 <p><input type="file" name=file class="form-control-file"></p>
                 <p><input type="submit" class="btn btn-primary" value="Upload"></p>
             </form>
-            {% for category, message in get_flashed_messages(with_categories=True) %}
-                <div class="alert alert-{{category}}" role="alert">{{ message }}</div>
-            {% endfor %}
         </div>
     </div>
 </div>

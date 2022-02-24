@@ -5271,6 +5271,15 @@ fieldset:disabled .btn {
   color: #6a1a21;
 }
 
+.alert-error {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+.alert-error .alert-link {
+  color: #6a1a21;
+}
+
 .alert-light {
   color: #636464;
   background-color: #fefefe;

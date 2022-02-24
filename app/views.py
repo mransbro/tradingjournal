@@ -174,6 +174,7 @@ def add_trade():
 
         db.session.add(record)
         db.session.commit()
+        flash("Trade succesfully added.", "info")
 
         return redirect(url_for("add_trade"))
 
@@ -208,7 +209,7 @@ def import_trade():
 
         csv_import(filename)
 
-        flash("Trades have been imported from the CSV file", "info")
+        flash("CSV file succesfully imported.", "info")
 
         return render_template("import_trade.html")
 
@@ -247,7 +248,7 @@ def update_trade(id):
 
             db.session.add(trade)
             db.session.commit()
-            flash("Saved successfully", "success")
+            flash("Trade updated successfully.", "success")
 
         except:
             db.session.rollback()

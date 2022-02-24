@@ -3,53 +3,11 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% for message in get_flashed_messages() %}
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-
 
 {% block form %}
 <div class="shadow p-3 mb-5 bg-body rounded">
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        
-        {{ form.date.label(class="form-label") }}
-
-        {{ form.date(class="form-control") }}
-        <br />
-
-        {{ form.symbol.label(class="form-label") }}
-
-        {{ form.symbol(class="form-control") }}
-        <br />
-
-        {{ form.num_shares.label(class="form-label") }}
-
-        {{ form.num_shares(class="form-control") }}
-        <br />
-
-        {{ form.buy_price.label(class="form-label") }}
-        
-        {{ form.buy_price(class="form-control") }}
-        <br />
-
-        {{ form.sell_price.label(class="form-label") }}
-        
-        {{ form.sell_price(class="form-control") }}
-        <br />
-
-        {{ form.notes.label(class="form-label") }}
-        
-        {{ form.notes(class="form-control") }}
-        <br />
-
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
+    {{ render_form(form) }}
 </div>
-
 {% endblock %}
 
 {% block table %}{% endblock %}
