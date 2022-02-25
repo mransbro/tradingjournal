@@ -13,6 +13,7 @@ def allowed_file(filename):
 # initialize database
 def create_db():
     db.create_all()
+    return
 
 
 def csv_import(file="./sample_trades.csv"):
@@ -45,3 +46,5 @@ def csv_import(file="./sample_trades.csv"):
 
         db.session.add(record)
         db.session.commit()
+
+    return
