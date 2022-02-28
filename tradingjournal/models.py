@@ -1,7 +1,10 @@
-from . import db
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from tradingjournal import app
 
 dateformat = "%Y-%m-%d"
+
+db = SQLAlchemy(app)
 
 
 class DailyRoutine(db.Model):
@@ -66,3 +69,6 @@ class Trade(db.Model):
             "net_roi": self.net_roi,
             "notes": self.notes,
         }
+
+
+db.create_all()

@@ -1,12 +1,13 @@
-from . import app, db
 from .tools import allowed_file, csv_import
-from .models import WeeklyRoutine, DailyRoutine, Trade
+from .models import WeeklyRoutine, DailyRoutine, Trade, db
 from .forms import DailyForm, WeeklyForm, TradeForm
 from flask import render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from sqlalchemy import desc
 import os
+
+from tradingjournal import app
 
 dateformat = "%Y-%m-%d"
 

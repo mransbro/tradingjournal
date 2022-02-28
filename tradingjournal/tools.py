@@ -1,5 +1,4 @@
-from . import db
-from .models import Trade
+from .models import Trade, db
 from datetime import datetime
 from csv import reader
 
@@ -8,12 +7,6 @@ ALLOWED_EXTENSIONS = {"csv"}
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-# initialize database
-def create_db():
-    db.create_all()
-    return
 
 
 def csv_import(file="./sample_trades.csv"):

@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 
 
@@ -13,9 +12,6 @@ app.config["SECRET_KEY"] = "igeuHGFFk773VAUEn2bcwim3"
 app.config["UPLOAD_FOLDER"] = "./app/uploads"
 app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024
 
-db = SQLAlchemy(app)
 
 # late import so modules can import their dependencies properly
-from . import models, views, forms
-
-db.create_all()
+from tradingjournal import models, views, forms
