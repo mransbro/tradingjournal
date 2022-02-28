@@ -17,3 +17,5 @@ db = SQLAlchemy(app)
 
 # late import so modules can import their dependencies properly
 from . import models, views, forms
+
+db.create_all()
