@@ -12,7 +12,7 @@ from tradingjournal import app
 dateformat = "%Y-%m-%d"
 
 
-@app.before_first_request()
+@app.before_first_request
 def create_tables():
     db.create_all()
 
