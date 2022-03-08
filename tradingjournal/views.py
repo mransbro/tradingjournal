@@ -1,6 +1,7 @@
+from importlib_metadata import entry_points
 from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade, db
-from .forms import DailyForm, WeeklyForm, TradeForm
+from .forms import DailyForm, WeeklyForm, TradeForm, RiskCalculator
 from flask import render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -283,6 +284,37 @@ def delete_trade():
 #    """
 #
 #    return {"data": [trade.to_dict() for trade in Trade.query.all()]}
+
+
+@app.route("/risk", methods=["GET", "POST"])
+def risk_calculator():
+    """
+    Risk calculator
+    """
+
+    form = RiskCalculator()
+
+    if request.method == "POST":
+
+        if form.validate_on_submit():
+            account_value = form.account_value.data
+            max_risk = form.max_risk.data
+            entry_price = form.entry_price.data
+            stop = form.stop.data
+            position_size = round(account_value / 100 * max_risk, 2)
+            num_shares = round(position_size / entry_price, 2)
+            risk_per_share = 0.0
+            risk_account_percent = 0
+            risk_account_value = 0.0
+
+        form = RiskCalculator()
+
+        return render_template(
+            "risk_calculator.html",
+            form=form,
+        )
+
+    return render_template("risk_calculator.html", form=form)
 
 
 @app.errorhandler(404)
