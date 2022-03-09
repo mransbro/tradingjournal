@@ -3,6 +3,7 @@ from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade, db
 from .forms import DailyForm, WeeklyForm, TradeForm, RiskCalculator
 from flask import render_template, flash, request, redirect, url_for
+from flask_limiter import Limiter
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from sqlalchemy import desc
@@ -10,6 +11,7 @@ import os
 
 from tradingjournal import app
 
+limiter = Limiter(app, default_limits=["15 per minute"])
 dateformat = "%Y-%m-%d"
 
 
@@ -47,6 +49,7 @@ def index():
 
 
 @app.route("/dailyroutine/add", methods=["GET", "POST"])
+@limiter.limit("4 per minute")
 def add_dailyroutine():
     """
     Return exisiting and add new daily routine entries.
@@ -92,6 +95,7 @@ def daily_data():
 
 
 @app.route("/weeklyroutine/add", methods=["GET", "POST"])
+@limiter.limit("4 per minute")
 def add_weeklyroutine():
     """
     Return exisiting and add new weekly routine entries.
@@ -139,6 +143,7 @@ def weekly_data():
 
 
 @app.route("/trade/add", methods=["GET", "POST"])
+@limiter.limit("4 per minute")
 def add_trade():
     """
     Return exisiting and add new trades.
