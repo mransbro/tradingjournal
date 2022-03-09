@@ -2,8 +2,9 @@ from importlib_metadata import entry_points
 from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade, db
 from .forms import DailyForm, WeeklyForm, TradeForm, RiskCalculator
-from flask import render_template, flash, request, redirect, url_for
+from flask import g, render_template, flash, request, redirect, url_for
 from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from sqlalchemy import desc
@@ -11,7 +12,9 @@ import os
 
 from tradingjournal import app
 
-limiter = Limiter(app, default_limits=["15 per minute"])
+limiter = Limiter(app, default_limits=["15/minute"], key_func=get_remote_address)
+db_add_limit = Limiter.shared_limit("4/minute", scope="sql")
+
 dateformat = "%Y-%m-%d"
 
 
@@ -49,7 +52,7 @@ def index():
 
 
 @app.route("/dailyroutine/add", methods=["GET", "POST"])
-@limiter.limit("4 per minute")
+@db_add_limit
 def add_dailyroutine():
     """
     Return exisiting and add new daily routine entries.
@@ -95,7 +98,7 @@ def daily_data():
 
 
 @app.route("/weeklyroutine/add", methods=["GET", "POST"])
-@limiter.limit("4 per minute")
+@db_add_limit
 def add_weeklyroutine():
     """
     Return exisiting and add new weekly routine entries.
@@ -143,7 +146,7 @@ def weekly_data():
 
 
 @app.route("/trade/add", methods=["GET", "POST"])
-@limiter.limit("4 per minute")
+@db_add_limit
 def add_trade():
     """
     Return exisiting and add new trades.
