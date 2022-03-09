@@ -1,6 +1,8 @@
 from .models import Trade, db
 from datetime import datetime
 from csv import reader
+import os
+from tradingjournal import app
 
 ALLOWED_EXTENSIONS = {"csv"}
 
@@ -9,9 +11,11 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def csv_import(file="./sample_trades.csv"):
+def csv_import(file):
 
-    with open(file) as filename:
+    fullpath = os.path.join(app.config["UPLOAD_FOLDER"], file)
+
+    with open(fullpath) as filename:
         data = reader(filename)
         trades = list(data)
 
