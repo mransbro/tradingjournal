@@ -13,9 +13,9 @@ def allowed_file(filename):
 
 def csv_import(file):
 
-    fullpath = os.path.join(app.config["UPLOAD_FOLDER"], file)
+    filefullpath = os.path.join(app.config["UPLOAD_FOLDER"], file)
 
-    with open(fullpath) as filename:
+    with open(filefullpath) as filename:
         data = reader(filename)
         trades = list(data)
 
@@ -43,6 +43,6 @@ def csv_import(file):
 
         db.session.add(record)
         db.session.commit()
-        os.remove(fullpath)
+        os.remove(filefullpath)
 
     return
