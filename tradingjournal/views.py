@@ -13,7 +13,7 @@ import os
 from tradingjournal import app
 
 limiter = Limiter(app, default_limits=["15/minute"], key_func=get_remote_address)
-db_add_limit = Limiter.shared_limit("4/minute", scope="sql")
+db_add_limit = limiter.shared_limit("4/minute", scope="db_add")
 
 dateformat = "%Y-%m-%d"
 
