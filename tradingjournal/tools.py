@@ -43,6 +43,6 @@ def csv_import(file):
 
         db.session.add(record)
         db.session.commit()
-        os.remove(filefullpath)
+        # os.remove(filefullpath)
 
     return
