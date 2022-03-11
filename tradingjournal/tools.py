@@ -20,6 +20,10 @@ def csv_import(file):
 
         num_shares = float(trade[2])
         buy_price = float(trade[3])
+
+        if trade[4] == "":
+            sell_date
+
         sell_price = float(trade[5])
 
         position_size = round(num_shares * buy_price, 2)
