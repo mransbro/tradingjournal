@@ -214,10 +214,11 @@ def import_trade():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            file.save(filename)
 
         csv_import(filename)
-
+        os.remove(filename)
+        
         flash("CSV file succesfully imported.", "info")
 
         return render_template("import_trade.html")

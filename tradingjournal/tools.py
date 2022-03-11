@@ -1,8 +1,6 @@
 from .models import Trade, db
 from datetime import datetime
 from csv import reader
-import os
-from tradingjournal import app
 
 ALLOWED_EXTENSIONS = {"csv"}
 
@@ -13,9 +11,8 @@ def allowed_file(filename):
 
 def csv_import(file):
 
-    filefullpath = os.path.join(app.config["UPLOAD_FOLDER"], file)
 
-    with open(filefullpath) as filename:
+    with open(file) as filename:
         data = reader(filename)
         trades = list(data)
 
@@ -43,6 +40,5 @@ def csv_import(file):
 
         db.session.add(record)
         db.session.commit()
-        # os.remove(filefullpath)
 
     return
