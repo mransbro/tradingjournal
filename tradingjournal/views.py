@@ -23,6 +23,12 @@ def create_tables():
     db.create_all()
 
 
+@app.before_first_request
+def checkdb():
+    if len(Trade.query.all()) < 10:
+        csv_import("sample_trades.csv")
+
+
 @app.route("/")
 def index():
     """
@@ -220,7 +226,7 @@ def import_trade():
 
         csv_import(filename)
         os.remove(filename)
-        
+
         flash("CSV file succesfully imported.", "info")
 
         return render_template("import_trade.html")
