@@ -160,6 +160,7 @@ def add_trade():
         symbol = form.symbol.data.upper()
         num_shares = form.num_shares.data
         buy_price = form.buy_price.data
+        sell_date = datetime.strptime(form.sell_date.data, dateformat)
         sell_price = form.sell_price.data
         position_size = round(num_shares * buy_price, 2)
         if sell_price == 0:
@@ -174,6 +175,7 @@ def add_trade():
             symbol=symbol,
             num_shares=num_shares,
             buy_price=buy_price,
+            sell_date=sell_date,
             sell_price=sell_price,
             position_size=position_size,
             net_pnl=net_pnl,
@@ -242,6 +244,7 @@ def update_trade(id):
             trade.symbol = form.symbol.data.upper()
             trade.num_shares = form.num_shares.data
             trade.buy_price = form.buy_price.data
+            trade.sell_date = form.sell_date
             trade.sell_price = form.sell_price.data
             trade.position_size = round(form.num_shares.data * form.buy_price.data, 2)
 

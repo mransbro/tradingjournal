@@ -20,7 +20,7 @@ def csv_import(file):
 
         num_shares = float(trade[2])
         buy_price = float(trade[3])
-        sell_price = float(trade[4])
+        sell_price = float(trade[5])
 
         position_size = round(num_shares * buy_price, 2)
         net_pnl = round((num_shares * sell_price) - position_size, 2)
@@ -31,11 +31,12 @@ def csv_import(file):
             symbol=trade[1].upper(),
             num_shares=num_shares,
             buy_price=buy_price,
+            sell_date=datetime.strptime(trade[4], "%Y-%m-%d"),
             sell_price=sell_price,
             position_size=position_size,
             net_pnl=net_pnl,
             net_roi=net_roi,
-            notes=trade[5],
+            notes=trade[6],
         )
 
         db.session.add(record)

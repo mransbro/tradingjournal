@@ -1,3 +1,4 @@
+from typing import Optional
 from wtforms import (
     StringField,
     SubmitField,
@@ -6,7 +7,7 @@ from wtforms import (
     BooleanField,
     FloatField,
 )
-from wtforms.validators import InputRequired, NumberRange, Regexp
+from wtforms.validators import InputRequired, NumberRange, Regexp, Optional
 from flask_wtf import FlaskForm
 
 
@@ -64,7 +65,8 @@ class TradeForm(FlaskForm):
     )
     num_shares = FloatField("No. of Shares")
     buy_price = FloatField("Buy Price")
-    sell_price = FloatField("Sell Price", default=0)
+    sell_date = StringField(id="datepick", validators=[Optional() ,Regexp(dateregex)])
+    sell_price = FloatField("Sell Price", default=0, validators=[Optional()])
     notes = StringField("Notes")
     submit = SubmitField("Submit")
 
