@@ -66,6 +66,47 @@
 
 
 {% block table %}
+<h3>Open Trades</h3>
+<div class="table-responsive">
+    <table id='data' class='table table-striped'>
+        <thead class="thead-dark">
+            <tr>
+                <th>id</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>No. of Shares</th>
+                <th>Buy Price $</th>
+                <th>Position Size $</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in opentrades %}
+            <tr>
+                <td>{{ trade.id }}</td>
+                <td>{{ trade.date }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.num_shares }}</td>
+                <td>{{ trade.buy_price }}</td>
+                <td>{{ trade.position_size }}</td>
+                <td>{{ trade.notes }}</td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
+                            <input type="hidden" name="id" value="{{ trade.id }}">
+                            <input type="submit" class="btn btn-sm btn-danger" value="Delete">
+                        </form>
+                        <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}"
+                            role="button">Edit</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h3>Closed Trades</h3>
 <div class="table-responsive">
     <table id='data' class='table table-striped'>
         <thead class="thead-dark">
@@ -84,7 +125,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for trade in trades %}
+        {% for trade in closedtrades %}
                 <tr>
                     <td>{{ trade.id }}</td>
                     <td>{{ trade.date }}</td>

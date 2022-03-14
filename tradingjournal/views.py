@@ -1,7 +1,7 @@
 from importlib_metadata import entry_points
 from .tools import allowed_file, csv_import
 from .models import WeeklyRoutine, DailyRoutine, Trade, db
-from .forms import DailyForm, WeeklyForm, TradeForm, RiskCalculator
+from .forms import DailyForm, WeeklyForm, TradeForm, RiskCalculator, UpdateTradeForm
 from flask import g, render_template, flash, request, redirect, url_for
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -34,13 +34,14 @@ def index():
     """
     Return the homepage.
     """
-    trades = Trade.query.all()
+    closedtrades = Trade.query.filter(Trade.sell_date != None).all()
+    opentrades = Trade.query.filter(Trade.sell_date == None).all()
     latesttrades = Trade.query.order_by(desc(Trade.date)).limit(10).all()
 
     latest_labels = [trade.date.strftime(dateformat) for trade in latesttrades]
     latest_values = [trade.net_roi for trade in latesttrades]
 
-    roidata = [trade.net_roi for trade in trades]
+    roidata = [trade.net_roi for trade in closedtrades]
     wins = len([win for win in roidata if win > 0])
     loses = len(roidata) - wins
     winloss_labels = ["win", "loss"]
@@ -53,7 +54,8 @@ def index():
         winloss_values=winloss_values,
         latest_labels=latest_labels,
         latest_values=latest_values,
-        trades=trades,
+        opentrades=opentrades,
+        closedtrades=closedtrades,
     )
 
 
@@ -166,15 +168,12 @@ def add_trade():
         symbol = form.symbol.data.upper()
         num_shares = form.num_shares.data
         buy_price = form.buy_price.data
-        sell_date = datetime.strptime(form.sell_date.data, dateformat)
-        sell_price = form.sell_price.data
+
+        sell_date = None
+        sell_price = 0.0
         position_size = round(num_shares * buy_price, 2)
-        if sell_price == 0:
-            net_pnl = 0
-            net_roi = 0
-        else:
-            net_pnl = round((num_shares * sell_price) - position_size, 2)
-            net_roi = round(net_pnl / position_size * 100, 2)
+        net_pnl = 0.0
+        net_roi = 0.0
 
         record = Trade(
             date=date,
@@ -241,7 +240,7 @@ def update_trade(id):
     """
 
     trade = Trade.query.filter_by(id=id).first()
-    form = TradeForm(obj=trade)
+    form = UpdateTradeForm(obj=trade)
 
     if form.validate_on_submit():
 
