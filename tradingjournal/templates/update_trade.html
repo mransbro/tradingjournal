@@ -11,4 +11,28 @@
 </div>
 {% endblock %}
 
+{% block scripts %}
 
+<script type="text/javascript">
+    $(document).on('focus', "#datepick", function () {
+        $(this).datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            autoclose: true,
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).on('focus', "#datepick", function () {
+        $(this).datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            autoclose: true,
+
+        });
+    });
+</script>
+
+{% endblock %}

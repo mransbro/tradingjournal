@@ -1,6 +1,6 @@
 from .models import Trade, db
 from datetime import datetime
-from csv import reader
+from csv import DictReader
 
 ALLOWED_EXTENSIONS = {"csv"}
 
@@ -11,31 +11,41 @@ def allowed_file(filename):
 
 def csv_import(file):
 
+    csv = DictReader(open(file))
+    data = []
+    for row in csv:
+        data.append(row)
 
-    with open(file) as filename:
-        data = reader(filename)
-        trades = list(data)
+    for trade in data:
 
-    for trade in trades[1:]:
+        num_shares = float(trade["num_shares"])
+        buy_price = float(trade["buy_price"])
 
-        num_shares = float(trade[2])
-        buy_price = float(trade[3])
-        sell_price = float(trade[4])
+        if "sell_date" not in trade.keys():
+            sell_date = None
+        else:
+            sell_date = datetime.strptime(trade["sell_date"], "%Y-%m-%d")
+
+        if "sell_price" not in trade.keys():
+            sell_price = 0.0
+        else:
+            sell_price = float(trade["sell_price"])
 
         position_size = round(num_shares * buy_price, 2)
         net_pnl = round((num_shares * sell_price) - position_size, 2)
         net_roi = round(net_pnl / position_size * 100, 2)
 
         record = Trade(
-            date=datetime.strptime(trade[0], "%Y-%m-%d"),
-            symbol=trade[1].upper(),
+            date=datetime.strptime(trade["date"], "%Y-%m-%d"),
+            symbol=trade["symbol"].upper(),
             num_shares=num_shares,
             buy_price=buy_price,
+            sell_date=sell_date,
             sell_price=sell_price,
             position_size=position_size,
             net_pnl=net_pnl,
             net_roi=net_roi,
-            notes=trade[5],
+            notes=trade["notes"],
         )
 
         db.session.add(record)
