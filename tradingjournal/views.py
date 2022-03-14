@@ -249,9 +249,13 @@ def update_trade(id):
             trade.symbol = form.symbol.data.upper()
             trade.num_shares = form.num_shares.data
             trade.buy_price = form.buy_price.data
-            trade.sell_date = form.sell_date
+            if not form.sell_date.data:
+                trade.sell_date = None
+            else:
+                trade.sell_date = datetime.strptime(form.sell_date.data, dateformat)
             trade.sell_price = form.sell_price.data
             trade.position_size = round(form.num_shares.data * form.buy_price.data, 2)
+            trade.notes = form.notes.data
 
             if form.sell_price.data == 0:
                 trade.net_pnl = 0

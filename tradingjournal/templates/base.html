@@ -63,16 +63,6 @@
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-        <script type="text/javascript">
-            $(document).on('focus', "#datepick", function() {
-                $('#datepick').datepicker({
-                    format: 'yyyy-mm-dd',
-                    todayHighlight: true,
-                    autoclose: true,
-
-                });
-            });
-        </script>
         {% block scripts %}{% endblock %}
 
     </body>
