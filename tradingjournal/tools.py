@@ -21,12 +21,12 @@ def csv_import(file):
         num_shares = float(trade["num_shares"])
         buy_price = float(trade["buy_price"])
 
-        if "sell_date" not in trade.keys():
+        if not trade["sell_date"]:
             sell_date = None
         else:
             sell_date = datetime.strptime(trade["sell_date"], "%Y-%m-%d")
 
-        if "sell_price" not in trade.keys():
+        if not trade["sell_price"]:
             sell_price = 0.0
         else:
             sell_price = float(trade["sell_price"])
