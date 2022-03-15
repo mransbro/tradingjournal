@@ -44,16 +44,6 @@ class DailyForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
-class WeeklyForm(FlaskForm):
-    date = StringField(id="datepick", validators=[Regexp(dateregex)])
-    industry_groups = StringField("Record notable changes of industry groups")
-    scans = BooleanField("Review weekly scans")
-    watchlist = BooleanField("Review Watchlist")
-    focuslist = BooleanField("Create Focuslist")
-    open_positions = BooleanField("Open positions")
-    submit = SubmitField("Submit")
-
-
 class TradeForm(FlaskForm):
     date = StringField(id="datepick", validators=[Regexp(dateregex)])
     symbol = StringField(
@@ -84,16 +74,3 @@ class UpdateTradeForm(FlaskForm):
     sell_price = FloatField("Sell Price", default=0, validators=[Optional()])
     notes = StringField("Notes")
     submit = SubmitField("Submit")
-
-
-class RiskCalculator(FlaskForm):
-    account_value = FloatField("Total account value")
-    max_risk = FloatField("Max percent account risk")
-    entry_price = FloatField("Entry price")
-    stop = FloatField("Stop price")
-    submit = SubmitField("Submit")
-    num_shares = FloatField("Number of shares", default=0.0)
-    position_size = FloatField("Total position size", default=0.0)
-    risk_per_share = FloatField("Risk per share value", default=0.0)
-    risk_account_percent = FloatField("Percent of risk for account", default=0.0)
-    risk_account_value = FloatField("Total value of risk", default=0.0)
