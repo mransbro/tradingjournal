@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block form %}
+<div class="shadow p-3 mb-5 bg-body rounded">
+    {{ render_form(form) }}
+</div>    
+<div class="shadow p-3 mb-5 bg-body rounded">
+    <form class="form" role="form">
+        <div class="mb-3">
+            <label class="form-label">Position Size $</label>
+            <input class="form-control" value={{ risk.position_size }}>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Number of shares</label>
+            <input class="form-control" value={{ risk.num_shares }}>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Risked per share $</label>
+            <input class="form-control" value={{ risk.risk_per_share }}>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Risked position %</label>
+            <input class="form-control" value={{ risk.risk_per_share_percent }}>      
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Risked account value $</label>
+            <input class="form-control" value={{ risk.risk_account_value }}>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block table %}{% endblock %}
+
+
+{% block scripts %}{% endblock %}
