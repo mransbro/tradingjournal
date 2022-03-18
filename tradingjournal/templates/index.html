@@ -68,8 +68,8 @@
 {% block table %}
 <h3>Open Trades</h3>
 <div class="table-responsive">
-    <table id='data' class='table table-striped'>
-        <thead class="thead-dark">
+    <table id='data' class='table table-sm table-hover table-bordered'>
+        <thead class="table-dark">
             <tr>
                 <th>id</th>
                 <th>Date</th>
@@ -78,6 +78,7 @@
                 <th>Buy Price $</th>
                 <th>Position Size $</th>
                 <th>Notes</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -96,8 +97,7 @@
                             <input type="hidden" name="id" value="{{ trade.id }}">
                             <input type="submit" class="btn btn-sm btn-danger" value="Delete">
                         </form>
-                        <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}"
-                            role="button">Edit</a>
+                        <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}" role="button">Edit</a>
                     </div>
                 </td>
             </tr>
@@ -108,8 +108,8 @@
 
 <h3>Closed Trades</h3>
 <div class="table-responsive">
-    <table id='data' class='table table-striped'>
-        <thead class="thead-dark">
+    <table id='data' class='table table-sm table-hover table-bordered'>
+        <thead class="table-dark">
             <tr>
                 <th>id</th>
                 <th>Date</th>
@@ -122,6 +122,7 @@
                 <th>Profit/Loss $</th>
                 <th>ROI %</th>
                 <th>Notes</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
