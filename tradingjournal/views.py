@@ -1,4 +1,3 @@
-
 from .tools import allowed_file, csv_import
 from .models import Trade, db
 from .forms import TradeForm, UpdateTradeForm, RiskCalculator
@@ -34,9 +33,14 @@ def index():
     """
     Return the homepage.
     """
-    closedtrades = Trade.query.filter(Trade.sell_date != None).all()
-    opentrades = Trade.query.filter(Trade.sell_date == None).all()
-    latesttrades = Trade.query.order_by(desc(Trade.date)).limit(10).all()
+    closedtrades = Trade.query.filter(Trade.sell_price != 0.0).all()
+    opentrades = Trade.query.filter(Trade.sell_price == 0.0).all()
+    latesttrades = (
+        Trade.query.filter(Trade.sell_price != 0.0)
+        .order_by(desc(Trade.date))
+        .limit(10)
+        .all()
+    )
 
     latest_labels = [trade.date.strftime(dateformat) for trade in latesttrades]
     latest_values = [trade.net_roi for trade in latesttrades]
@@ -57,7 +61,6 @@ def index():
         opentrades=opentrades,
         closedtrades=closedtrades,
     )
-
 
 
 @app.route("/trade/add", methods=["GET", "POST"])
@@ -212,7 +215,7 @@ def risk_calculator():
     """
 
     form = RiskCalculator()
-    risk={}
+    risk = {}
 
     if request.method == "POST":
 
@@ -221,23 +224,24 @@ def risk_calculator():
             max_risk = form.max_risk.data
             entry_price = form.entry_price.data
             stop = form.stop.data
-            
+
             account_risk = account_value / 100 * max_risk
             trade_risk = entry_price - stop
 
             risk["risk_per_share"] = round(trade_risk, 2)
             risk["num_shares"] = round(account_risk / trade_risk, 2)
             risk["position_size"] = round(risk["num_shares"] * entry_price, 2)
-            risk["risk_per_share_percent"] = round((risk["risk_per_share"] / entry_price) * 100, 2)
-            risk["risk_account_value"] = round(risk["num_shares"] * risk["risk_per_share"], 2)
+            risk["risk_per_share_percent"] = round(
+                (risk["risk_per_share"] / entry_price) * 100, 2
+            )
+            risk["risk_account_value"] = round(
+                risk["num_shares"] * risk["risk_per_share"], 2
+            )
 
+        return render_template("risk_calculator.html", form=form, risk=risk)
 
-        return render_template(
-            "risk_calculator.html",
-            form=form, risk=risk
-        )
+    return render_template("risk_calculator.html", form=form, risk=risk)
 
-    return render_template("risk_calculator.html", form=form,risk=risk)
 
 @app.errorhandler(404)
 def handle_404(e):
