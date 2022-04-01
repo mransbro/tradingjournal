@@ -77,7 +77,6 @@
                 <th>No. of Shares</th>
                 <th>Buy Price $</th>
                 <th>Position Size $</th>
-                <th>Notes</th>
                 <th></th>
             </tr>
         </thead>
@@ -90,7 +89,6 @@
                 <td>{{ trade.num_shares }}</td>
                 <td>{{ trade.buy_price }}</td>
                 <td>{{ trade.position_size }}</td>
-                <td>{{ trade.notes }}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
@@ -121,7 +119,6 @@
                 <th>Sell Price $</th>
                 <th>Profit/Loss $</th>
                 <th>ROI %</th>
-                <th>Notes</th>
                 <th></th>
             </tr>
         </thead>
@@ -138,7 +135,6 @@
                     <td>{{ trade.sell_price }}</td>
                     <td>{{ trade.net_pnl }}</td>
                     <td>{{ trade.net_roi }}</td>
-                    <td>{{ trade.notes }}</td>
                     <td class="text-right">
                         <div class="btn-group">
                             <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
