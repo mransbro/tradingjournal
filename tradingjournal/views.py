@@ -33,16 +33,21 @@ def index():
     """
     Return the homepage.
     """
-    closedtrades = Trade.query.filter(Trade.sell_price != 0.0).all()
+    closedtrades = (
+        Trade.query.filter(Trade.sell_price != 0.0)
+        .order_by(desc(Trade.date))
+        .limit(15)
+        .all()
+    )
     opentrades = Trade.query.filter(Trade.sell_price == 0.0).all()
     latesttrades = (
         Trade.query.filter(Trade.sell_price != 0.0)
-        .order_by(desc(Trade.date))
+        .order_by(desc(Trade.sell_date))
         .limit(10)
         .all()
     )
 
-    latest_labels = [trade.date.strftime(dateformat) for trade in latesttrades]
+    latest_labels = [trade.sell_date.strftime(dateformat) for trade in latesttrades]
     latest_values = [trade.net_roi for trade in latesttrades]
 
     roidata = [trade.net_roi for trade in closedtrades]
@@ -241,6 +246,21 @@ def risk_calculator():
         return render_template("risk_calculator.html", form=form, risk=risk)
 
     return render_template("risk_calculator.html", form=form, risk=risk)
+
+
+@app.route("/trade/report", methods=["GET"])
+def report():
+
+    return render_template("report.html")
+
+
+@app.route("/trade/data")
+def trade_data():
+    """
+    Return trade table data.
+    """
+
+    return {"data": [trade.to_dict() for trade in Trade.query.all()]}
 
 
 @app.errorhandler(404)

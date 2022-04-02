@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+{% endblock %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block table %}
+<div class="table-responsive">
+    <table id='data' class='table table-sm table-hover table-bordered'>
+        <thead class="table-dark">
+            <tr>
+                <th>id</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>No. of Shares</th>
+                <th>Buy Price $</th>
+                <th>Position Size $</th>
+                <th>Sell Date</th>
+                <th>Sell Price $</th>
+                <th>Profit/Loss $</th>
+                <th>ROI %</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            ajax: '/trade/data',
+            columns: [
+                { data: 'id' },
+                { data: 'date' },
+                { data: 'symbol' },
+                { data: 'num_shares' },
+                { data: 'buy_price' },
+                { data: 'position_size' },
+                { data: 'sell_date' },
+                { data: 'sell_price' },
+                { data: 'net_pnl' },
+                { data: 'net_roi' },
+                { data: 'notes' }
+            ]
+        });
+    });
+</script>
+{% endblock %}
