@@ -27,6 +27,7 @@ Installing the app is easy:
 - Improve styling.
 - ~~Deploy to Heroku or similar solution to run demo instance.~~
 - Add tests & logging
+- Refactor to use app factory pattern
 
 ## License
 
