@@ -25,7 +25,7 @@ Installing the app is easy:
 - Function to insert demo data into the DB.
 - ~~Visualisations on dashboard.~~
 - Improve styling.
-- Deploy to Heroku or similar solution to run demo instance.
+- ~~Deploy to Heroku or similar solution to run demo instance.~~
 - Add tests & logging
 
 ## License
