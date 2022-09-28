@@ -1,73 +1,23 @@
-from .tools import allowed_file, csv_import
-from .models import Trade, db
-from .forms import TradeForm, UpdateTradeForm, RiskCalculator
-from flask import render_template, flash, request, redirect, url_for
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import current_app as app
+from .models import Trade
+from .forms import TradeForm, UpdateTradeForm
+import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from sqlalchemy import desc
-import os
+from tradingjournal import db
+from tradingjournal.tools import allowed_file, csv_import
 
-from tradingjournal import app
-
-limiter = Limiter(app, default_limits=["15/minute"], key_func=get_remote_address)
-db_add_limit = limiter.shared_limit("4/minute", scope="db_add")
+trades_bp = Blueprint("trades_bp", __name__)
 
 dateformat = "%Y-%m-%d"
 
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
-@app.before_first_request
-def checkdb():
-    if len(Trade.query.all()) < 10:
-        csv_import("sample_trades.csv")
-
-
-@app.route("/")
-def index():
-    """
-    Return the homepage.
-    """
-    closedtrades = Trade.query.filter(Trade.sell_price != 0.0).all()
-    opentrades = Trade.query.filter(Trade.sell_price == 0.0).all()
-    latesttrades = (
-        Trade.query.filter(Trade.sell_price != 0.0)
-        .order_by(desc(Trade.date))
-        .limit(10)
-        .all()
-    )
-
-    latest_labels = [trade.date.strftime(dateformat) for trade in latesttrades]
-    latest_values = [trade.net_roi for trade in latesttrades]
-
-    roidata = [trade.net_roi for trade in closedtrades]
-    wins = len([win for win in roidata if win > 0])
-    loses = len(roidata) - wins
-    winloss_labels = ["win", "loss"]
-    winloss_values = [wins, loses]
-
-    return render_template(
-        "index.html",
-        title="Trading Journal",
-        winloss_labels=winloss_labels,
-        winloss_values=winloss_values,
-        latest_labels=latest_labels,
-        latest_values=latest_values,
-        opentrades=opentrades,
-        closedtrades=closedtrades,
-    )
-
-
 @app.route("/trade/add", methods=["GET", "POST"])
-@db_add_limit
+#@db_add_limit
 def add_trade():
     """
-    Return exisiting and add new trades.
+    Return existing and add new trades.
     """
 
     form = TradeForm()
@@ -100,7 +50,7 @@ def add_trade():
 
         db.session.add(record)
         db.session.commit()
-        flash("Trade succesfully added.", "info")
+        flash("Trade successfully added.", "info")
 
         return redirect(url_for("add_trade"))
 
@@ -136,20 +86,20 @@ def import_trade():
         csv_import(filename)
         os.remove(filename)
 
-        flash("CSV file succesfully imported.", "info")
+        flash("CSV file successfully imported.", "info")
 
         return render_template("import_trade.html")
 
     return render_template("import_trade.html")
 
 
-@app.route("/trade/update/<id>", methods=["GET", "POST"])
-def update_trade(id):
+@app.route("/trade/update/<ref>", methods=["GET", "POST"])
+def update_trade(ref):
     """
     Update an existing trade in the database.
     """
 
-    trade = Trade.query.filter_by(id=id).first()
+    trade = Trade.query.filter_by(id=ref).first()
     form = UpdateTradeForm(obj=trade)
 
     if form.validate_on_submit():
@@ -196,7 +146,7 @@ def delete_trade():
     """
 
     try:
-        trade = Trade.query.filter_by(id=request.form["id"]).first()
+        trade = Trade.query.filter_by(id=request.form["ref"]).first()
         db.session.delete(trade)
         db.session.commit()
         flash("Delete successful.", "danger")
@@ -207,53 +157,3 @@ def delete_trade():
 
     return redirect(url_for("index"))
 
-
-@app.route("/risk", methods=["GET", "POST"])
-def risk_calculator():
-    """
-    Risk calculator
-    """
-
-    form = RiskCalculator()
-    risk = {}
-
-    if request.method == "POST":
-
-        if form.validate_on_submit():
-            account_value = form.account_value.data
-            max_risk = form.max_risk.data
-            entry_price = form.entry_price.data
-            stop = form.stop.data
-
-            account_risk = account_value / 100 * max_risk
-            trade_risk = entry_price - stop
-
-            risk["risk_per_share"] = round(trade_risk, 2)
-            risk["num_shares"] = round(account_risk / trade_risk, 2)
-            risk["position_size"] = round(risk["num_shares"] * entry_price, 2)
-            risk["risk_per_share_percent"] = round(
-                (risk["risk_per_share"] / entry_price) * 100, 2
-            )
-            risk["risk_account_value"] = round(
-                risk["num_shares"] * risk["risk_per_share"], 2
-            )
-
-        return render_template("risk_calculator.html", form=form, risk=risk)
-
-    return render_template("risk_calculator.html", form=form, risk=risk)
-
-
-@app.errorhandler(404)
-def handle_404(e):
-    """
-    Return a 404 error page.
-    """
-    return "404", 404
-
-
-@app.errorhandler(500)
-def handle_500(e):
-    """
-    Return a 500 error page.
-    """
-    return "500", 500

@@ -1,14 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
-from tradingjournal import app
-
+from tradingjournal import db
 dateformat = "%Y-%m-%d"
-
-db = SQLAlchemy(app)
 
 
 class Trade(db.Model):
     __tablename__ = "trades"
-    id = db.Column(db.Integer, primary_key=True)
+    ref = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, unique=False, nullable=False)
     symbol = db.Column(db.String, nullable=False)
     num_shares = db.Column(db.Float, nullable=False)
@@ -22,7 +18,7 @@ class Trade(db.Model):
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "ref": self.ref,
             "date": self.date.strftime(dateformat),
             "symbol": self.symbol,
             "num_shares": self.num_shares,
