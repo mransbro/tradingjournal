@@ -22,12 +22,12 @@ Installing the app is easy:
 ## Roadmap
 
 - ~~Import trades from csv~~
-- Function to insert demo data into the DB.
+- ~Function to insert demo data into the DB.~
 - ~~Visualisations on dashboard.~~
-- Improve styling.
+- ~Improve styling.~
 - ~~Deploy to Heroku or similar solution to run demo instance.~~
 - Add tests & logging
-- Refactor to use app factory pattern
+- ~Refactor to use app factory pattern~
 
 ## License
 
