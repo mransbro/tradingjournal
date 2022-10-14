@@ -1,34 +1,24 @@
-from .tools import allowed_file, csv_import
-from .models import Trade, db
-from .forms import TradeForm, UpdateTradeForm, RiskCalculator
-from flask import render_template, flash, request, redirect, url_for
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from flask import render_template, flash, redirect, url_for, request
+from app.models import Trade
+import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from app import db
+from app.tools import allowed_file, csv_import
+from app.main.forms import RiskCalculator, TradeForm, UpdateTradeForm
+from app.main import bp
 from sqlalchemy import desc
-import os
-
-from tradingjournal import app
-
-limiter = Limiter(app, default_limits=["15/minute"], key_func=get_remote_address)
-db_add_limit = limiter.shared_limit("4/minute", scope="db_add")
 
 dateformat = "%Y-%m-%d"
 
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
-@app.before_first_request
+@bp.before_app_first_request
 def checkdb():
     if len(Trade.query.all()) < 10:
         csv_import("sample_trades.csv")
 
 
-@app.route("/")
+@bp.route("/", methods=["GET"])
 def index():
     """
     Return the homepage.
@@ -63,11 +53,10 @@ def index():
     )
 
 
-@app.route("/trade/add", methods=["GET", "POST"])
-@db_add_limit
+@bp.route("/trade/add", methods=["GET", "POST"])
 def add_trade():
     """
-    Return exisiting and add new trades.
+    Return existing and add new main.
     """
 
     form = TradeForm()
@@ -100,9 +89,9 @@ def add_trade():
 
         db.session.add(record)
         db.session.commit()
-        flash("Trade succesfully added.", "info")
+        flash("Trade successfully added.", "info")
 
-        return redirect(url_for("add_trade"))
+        return redirect(url_for("main.add_trade"))
 
     else:
         for field, errors in form.errors.items():
@@ -115,10 +104,10 @@ def add_trade():
     return render_template("add_trade.html", form=form, title="Trades")
 
 
-@app.route("/trade/import", methods=["GET", "POST"])
+@bp.route("/trade/import", methods=["GET", "POST"])
 def import_trade():
     """
-    Return page used to import trades from a CSV file.
+    Return page used to import main from a CSV file.
     """
 
     if request.method == "POST":
@@ -136,20 +125,20 @@ def import_trade():
         csv_import(filename)
         os.remove(filename)
 
-        flash("CSV file succesfully imported.", "info")
+        flash("CSV file successfully imported.", "info")
 
         return render_template("import_trade.html")
 
     return render_template("import_trade.html")
 
 
-@app.route("/trade/update/<id>", methods=["GET", "POST"])
-def update_trade(id):
+@bp.route("/trade/update/<ref>", methods=["GET", "POST"])
+def update_trade(ref):
     """
     Update an existing trade in the database.
     """
 
-    trade = Trade.query.filter_by(id=id).first()
+    trade = Trade.query.filter_by(ref=ref).first()
     form = UpdateTradeForm(obj=trade)
 
     if form.validate_on_submit():
@@ -189,14 +178,14 @@ def update_trade(id):
     return render_template("update_trade.html", form=form)
 
 
-@app.route("/trade/delete", methods=["POST"])
+@bp.route("/trade/delete", methods=["POST"])
 def delete_trade():
     """
     Update an exiting trade in the database.
     """
 
     try:
-        trade = Trade.query.filter_by(id=request.form["id"]).first()
+        trade = Trade.query.filter_by(ref=request.form["ref"]).first()
         db.session.delete(trade)
         db.session.commit()
         flash("Delete successful.", "danger")
@@ -205,10 +194,10 @@ def delete_trade():
         db.session.rollback()
         flash("Error deleting trade.", "danger")
 
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
 
-@app.route("/risk", methods=["GET", "POST"])
+@bp.route("/risk", methods=["GET", "POST"])
 def risk_calculator():
     """
     Risk calculator
@@ -241,19 +230,3 @@ def risk_calculator():
         return render_template("risk_calculator.html", form=form, risk=risk)
 
     return render_template("risk_calculator.html", form=form, risk=risk)
-
-
-@app.errorhandler(404)
-def handle_404(e):
-    """
-    Return a 404 error page.
-    """
-    return "404", 404
-
-
-@app.errorhandler(500)
-def handle_500(e):
-    """
-    Return a 500 error page.
-    """
-    return "500", 500
