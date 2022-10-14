@@ -1,4 +1,4 @@
-from tradingjournal.trades.models import Trade, db
+from app.models import Trade, db
 from datetime import datetime
 from csv import DictReader
 

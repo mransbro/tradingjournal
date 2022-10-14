@@ -71,7 +71,7 @@
     <table id='data' class='table table-sm table-hover table-bordered'>
         <thead class="table-dark">
             <tr>
-                <th>id</th>
+                <th>Ref</th>
                 <th>Date</th>
                 <th>Symbol</th>
                 <th>No. of Shares</th>
@@ -84,7 +84,7 @@
         <tbody>
             {% for trade in opentrades %}
             <tr>
-                <td>{{ trade.id }}</td>
+                <td>{{ trade.ref }}</td>
                 <td>{{ trade.date }}</td>
                 <td>{{ trade.symbol }}</td>
                 <td>{{ trade.num_shares }}</td>
@@ -93,11 +93,11 @@
                 <td>{{ trade.notes }}</td>
                 <td class="text-right">
                     <div class="btn-group">
-                        <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
-                            <input type="hidden" name="id" value="{{ trade.id }}">
+                        <form action="{{ url_for('main.delete_trade') }}" method="post" class="pull-right">
+                            <input type="hidden" name="ref" value="{{ trade.ref }}">
                             <input type="submit" class="btn btn-sm btn-danger" value="Delete">
                         </form>
-                        <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}" role="button">Edit</a>
+                        <a class="btn btn-sm btn-primary" href="{{ url_for('main.update_trade', ref=trade.ref) }}" role="button">Edit</a>
                     </div>
                 </td>
             </tr>
@@ -111,7 +111,7 @@
     <table id='data' class='table table-sm table-hover table-bordered'>
         <thead class="table-dark">
             <tr>
-                <th>id</th>
+                <th>Ref</th>
                 <th>Date</th>
                 <th>Symbol</th>
                 <th>No. of Shares</th>
@@ -128,7 +128,7 @@
         <tbody>
         {% for trade in closedtrades %}
                 <tr>
-                    <td>{{ trade.id }}</td>
+                    <td>{{ trade.ref }}</td>
                     <td>{{ trade.date }}</td>
                     <td>{{ trade.symbol }}</td>
                     <td>{{ trade.num_shares }}</td>
@@ -141,11 +141,11 @@
                     <td>{{ trade.notes }}</td>
                     <td class="text-right">
                         <div class="btn-group">
-                            <form action="{{ url_for('delete_trade') }}" method="post" class="pull-right">
-                                <input type="hidden" name="id" value="{{ trade.id }}">
+                            <form action="{{ url_for('main.delete_trade') }}" method="post" class="pull-right">
+                                <input type="hidden" name="ref" value="{{ trade.ref }}">
                                 <input type="submit" class="btn btn-sm btn-danger" value="Delete">
                             </form>
-                            <a class="btn btn-sm btn-primary" href="{{ url_for('update_trade', id=trade.id) }}" role="button">Edit</a>
+                            <a class="btn btn-sm btn-primary" href="{{ url_for('main.update_trade', ref=trade.ref) }}" role="button">Edit</a>
                         </div>
                     </td>
                 </tr>

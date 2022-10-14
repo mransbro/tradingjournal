@@ -1,5 +1,7 @@
-from tradingjournal import db
+from flask_sqlalchemy import SQLAlchemy
 dateformat = "%Y-%m-%d"
+
+db = SQLAlchemy()
 
 
 class Trade(db.Model):

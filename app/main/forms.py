@@ -36,3 +36,11 @@ class UpdateTradeForm(FlaskForm):
     sell_price = FloatField("Sell Price", default=0, validators=[Optional()])
     notes = StringField("Notes")
     submit = SubmitField("Submit")
+
+
+class RiskCalculator(FlaskForm):
+    account_value = FloatField("Total account value")
+    max_risk = FloatField("Max percent of account willing to risk")
+    entry_price = FloatField("Entry price")
+    stop = FloatField("Stop price")
+    submit = SubmitField("Submit")
