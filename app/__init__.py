@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+
 from flask_bootstrap import Bootstrap5
 from app.models import db
 from config import Config
@@ -13,7 +14,6 @@ def init_app(config_class=Config):
 
     db.init_app(app)
     db.app = app
-    db.create_all()
 
     migrate.init_app(app, db)
     migrate.app = app
@@ -23,6 +23,9 @@ def init_app(config_class=Config):
     with app.app_context():
 
         from app.main import bp as main_bp
+
+        db.create_all()
+
         app.register_blueprint(main_bp)
 
         return app
