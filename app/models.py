@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+
 dateformat = "%Y-%m-%d"
 
 db = SQLAlchemy()
@@ -32,4 +33,3 @@ class Trade(db.Model):
             "net_roi": self.net_roi,
             "notes": self.notes,
         }
-

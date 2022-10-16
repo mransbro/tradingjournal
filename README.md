@@ -1,6 +1,6 @@
 # Trading journal
 
-A simple trade journal and market review app built with Python Flask.
+A simple trade journal app built with Python Flask.
 
 ![home](https://github.com/mransbro/tradingjournal/blob/main/img/homepage.png)
 
@@ -8,30 +8,26 @@ A simple trade journal and market review app built with Python Flask.
 
 Make sure you have the following prereqs:
 
-1. Python >= 3.7
+1. Python >= 3.10
 2. Pip
 3. Git
 
 Installing the app is easy:
 
 1. Clone the repository in the directory you wish: git clone https://github.com/mransbro/tradingjournal.git
-2. Enter the dream-journal directory. (cd tradingjournal)
+2. Enter the tradingjournal directory. (cd tradingjournal)
 3. Install requirements: pip install -r requirements.txt
 4. Run the app: python3 tradingjournal/run.py.
 
+## Want to try it out
+
+Demo running on [Render](https://tradingjounral.onrender.com)
+
 ## Roadmap
 
-- ~~Import trades from csv~~
-- ~Function to insert demo data into the DB.~
-- ~~Visualisations on dashboard.~~
-- ~Improve styling.~
-- ~~Deploy to Heroku or similar solution to run demo instance.~~
-- Add tests & logging
-- ~Refactor to use app factory pattern~
-
-## License
-
-This project is licensed under the MIT license, so we value open-source contributions. Please see the LICENSE file for more details.
+- Error handling
+- Tests
+- Reduce number of packages
 
 # Built with
 
