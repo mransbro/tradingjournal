@@ -12,12 +12,6 @@ from sqlalchemy import desc
 dateformat = "%Y-%m-%d"
 
 
-@bp.before_app_first_request
-def checkdb():
-    if len(Trade.query.all()) < 10:
-        csv_import("sample_trades.csv")
-
-
 @bp.route("/", methods=["GET"])
 def index():
     """

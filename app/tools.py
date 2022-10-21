@@ -52,3 +52,8 @@ def csv_import(file):
         db.session.commit()
 
     return
+
+
+def checkdb():
+    if len(Trade.query.all()) < 10:
+        csv_import("sample_trades.csv")
