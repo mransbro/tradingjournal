@@ -10,3 +10,7 @@ Flask-Migrate==3.1.0
 Bootstrap-Flask==2.1.0
 
 python-dotenv==0.21.0
+
+pytest==7.1.3
+
+
