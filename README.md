@@ -14,10 +14,11 @@ Make sure you have the following prereqs:
 
 Installing the app is easy:
 
-1. Clone the repository in the directory you wish: git clone https://github.com/mransbro/tradingjournal.git
+1. Clone the repository in the directory you wish: `git clone` https://github.com/mransbro/tradingjournal.git
 2. Enter the tradingjournal directory. (cd tradingjournal)
-3. Install requirements: pip install -r requirements.txt
-4. Run the app: python3 tradingjournal/run.py.
+3. Install requirements: `pip install -r requirements.txt`
+4. Run the app: `python3 run.py`.
+5. For production use gunicron `gunicorn -w 4 "app:init_app()"`
 
 ## Want to try it out
 
