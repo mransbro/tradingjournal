@@ -8,7 +8,7 @@ A simple trade journal app built with Python Flask.
 
 Make sure you have the following prereqs:
 
-1. Python >= 3.10
+1. Python >= 3.11
 2. Pip
 3. Git
 
