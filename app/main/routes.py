@@ -7,7 +7,7 @@ from app import db
 from app.tools import allowed_file, csv_import
 from app.main.forms import RiskCalculator, TradeForm, UpdateTradeForm
 from app.main import bp
-from sqlalchemy import desc
+from sqlalchemy import desc, exc
 
 dateformat = "%Y-%m-%d"
 
@@ -56,7 +56,6 @@ def add_trade():
     form = TradeForm()
 
     if form.validate_on_submit():
-
         date = datetime.strptime(form.date.data, dateformat)
         symbol = form.symbol.data.upper()
         num_shares = form.num_shares.data
@@ -105,7 +104,6 @@ def import_trade():
     """
 
     if request.method == "POST":
-
         if "file" not in request.files or request.files["file"] == "":
             flash("No file part", "warning")
             return redirect(request.url)
@@ -136,7 +134,6 @@ def update_trade(ref):
     form = UpdateTradeForm(obj=trade)
 
     if form.validate_on_submit():
-
         try:
             trade.date = datetime.strptime(form.date.data, dateformat)
             trade.symbol = form.symbol.data.upper()
@@ -165,30 +162,32 @@ def update_trade(ref):
             db.session.commit()
             flash("Trade updated successfully.", "success")
 
-        except:
+        except exc.SQLAlchemyError:
             db.session.rollback()
             flash("Error updating trade.", "danger")
 
     return render_template("update_trade.html", form=form)
 
 
-@bp.route("/trade/delete", methods=["POST"])
-def delete_trade():
+@bp.route("/trade/delete/<ref>", methods=["Delete"])
+def delete_trade(ref):
     """
     Update an exiting trade in the database.
     """
 
-    try:
-        trade = Trade.query.filter_by(ref=request.form["ref"]).first()
+    trade = Trade.query.get(ref)
+
+    if trade:
         db.session.delete(trade)
         db.session.commit()
-        flash("Delete successful.", "danger")
+        # flash("Delete successful.", "danger")
+        return "", 204
 
-    except:
-        db.session.rollback()
-        flash("Error deleting trade.", "danger")
+    else:
+        # flash("Error deleting trade.", "danger")
+        return "Trade not found", 404
 
-    return redirect(url_for("main.index"))
+    # return redirect(url_for("main.index"))
 
 
 @bp.route("/risk", methods=["GET", "POST"])
@@ -201,7 +200,6 @@ def risk_calculator():
     risk = {}
 
     if request.method == "POST":
-
         if form.validate_on_submit():
             account_value = form.account_value.data
             max_risk = form.max_risk.data
