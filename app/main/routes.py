@@ -56,7 +56,6 @@ def add_trade():
     form = TradeForm()
 
     if form.validate_on_submit():
-
         date = datetime.strptime(form.date.data, dateformat)
         symbol = form.symbol.data.upper()
         num_shares = form.num_shares.data
@@ -105,7 +104,6 @@ def import_trade():
     """
 
     if request.method == "POST":
-
         if "file" not in request.files or request.files["file"] == "":
             flash("No file part", "warning")
             return redirect(request.url)
@@ -136,7 +134,6 @@ def update_trade(ref):
     form = UpdateTradeForm(obj=trade)
 
     if form.validate_on_submit():
-
         try:
             trade.date = datetime.strptime(form.date.data, dateformat)
             trade.symbol = form.symbol.data.upper()
@@ -178,7 +175,7 @@ def delete_trade(ref):
     Update an exiting trade in the database.
     """
 
-    trade = Trade.query.filter_by(ref).first()
+    trade = Trade.query.get(ref)
 
     if trade:
         db.session.delete(trade)
@@ -203,7 +200,6 @@ def risk_calculator():
     risk = {}
 
     if request.method == "POST":
-
         if form.validate_on_submit():
             account_value = form.account_value.data
             max_risk = form.max_risk.data

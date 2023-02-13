@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-
-
 {% block body %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
 
@@ -167,8 +165,14 @@
 
     function deleteTrade(ref) {
         fetch(`/trade/delete/${ref}`, {
-            method: 'DELETE'
-        })
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function (response) {
+                console.log(data);
+            }
+        })    
     }
 </script>
 {% endblock %}
