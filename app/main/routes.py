@@ -7,7 +7,7 @@ from app import db
 from app.tools import allowed_file, csv_import
 from app.main.forms import RiskCalculator, TradeForm, UpdateTradeForm
 from app.main import bp
-from sqlalchemy import desc
+from sqlalchemy import desc, exc
 
 dateformat = "%Y-%m-%d"
 
@@ -165,7 +165,7 @@ def update_trade(ref):
             db.session.commit()
             flash("Trade updated successfully.", "success")
 
-        except:
+        except exc.SQLAlchemyError:
             db.session.rollback()
             flash("Error updating trade.", "danger")
 
