@@ -53,7 +53,6 @@
                         'rgb(33, 93, 110)',
                         'rgb(42, 72, 88)'
                     ]
-
                 }
             ]
         },
@@ -68,7 +67,7 @@
 {% block table %}
 <h3>Open Trades</h3>
 <div class="table-responsive">
-    <table id='data' class='table table-sm table-hover table-bordered'>
+    <table id='opentrades' class='table table-sm table-hover table-bordered'>
         <thead class="table-dark">
             <tr>
                 <th>Ref</th>
@@ -78,6 +77,7 @@
                 <th>Buy Price $</th>
                 <th>Position Size $</th>
                 <th>Notes</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -91,15 +91,8 @@
                 <td>{{ trade.buy_price }}</td>
                 <td>{{ trade.position_size }}</td>
                 <td>{{ trade.notes }}</td>
-                <td class="text-right">
-                    <div class="btn-group">
-                        <form action="{{ url_for('main.delete_trade') }}" method="post" class="pull-right">
-                            <input type="hidden" name="ref" value="{{ trade.ref }}">
-                            <input type="submit" class="btn btn-sm btn-danger" value="Delete">
-                        </form>
-                        <a class="btn btn-sm btn-primary" href="{{ url_for('main.update_trade', ref=trade.ref) }}" role="button">Edit</a>
-                    </div>
-                </td>
+                <td><button class="btn btn-sm btn-primary" onclick="updateTrade({{ trade.ref }})">Edit</button></td>
+                <td><button class="btn btn-sm btn-primary btn-danger" onclick="deleteTrade({{ trade.ref }})">Delete</button></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -108,7 +101,7 @@
 
 <h3>Closed Trades</h3>
 <div class="table-responsive">
-    <table id='data' class='table table-sm table-hover table-bordered'>
+    <table id='closedtrades' class='table table-sm table-hover table-bordered'>
         <thead class="table-dark">
             <tr>
                 <th>Ref</th>
@@ -122,6 +115,7 @@
                 <th>Profit/Loss $</th>
                 <th>ROI %</th>
                 <th>Notes</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -139,15 +133,8 @@
                     <td>{{ trade.net_pnl }}</td>
                     <td>{{ trade.net_roi }}</td>
                     <td>{{ trade.notes }}</td>
-                    <td class="text-right">
-                        <div class="btn-group">
-                            <form action="{{ url_for('main.delete_trade') }}" method="post" class="pull-right">
-                                <input type="hidden" name="ref" value="{{ trade.ref }}">
-                                <input type="submit" class="btn btn-sm btn-danger" value="Delete">
-                            </form>
-                            <a class="btn btn-sm btn-primary" href="{{ url_for('main.update_trade', ref=trade.ref) }}" role="button">Edit</a>
-                        </div>
-                    </td>
+                    <td><button class="btn btn-sm btn-primary" onclick="updateTrade({{ trade.ref }})">Edit</button></td>
+                    <td><button class="btn btn-sm btn-primary btn-danger" onclick="deleteTrade({{ trade.ref }})">Delete</button></td>
                 </tr>
                 {% endfor %}
         </tbody>
@@ -156,4 +143,32 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#opentrades').DataTable({
+            pageLength: 10,
+            lengthChange: false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+            $('#closedtrades').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+            });
+        });
+</script>
+<script>
+    function updateTrade(ref) {
+        window.location.href = `/trade/update/${ref}`;    
+    }
+
+    function deleteTrade(ref) {
+        fetch(`/trade/delete/${ref}`, {
+            method: 'DELETE'
+        })
+    }
+</script>
 {% endblock %}

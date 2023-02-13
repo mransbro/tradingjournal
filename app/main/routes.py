@@ -172,23 +172,25 @@ def update_trade(ref):
     return render_template("update_trade.html", form=form)
 
 
-@bp.route("/trade/delete", methods=["POST"])
-def delete_trade():
+@bp.route("/trade/delete/<ref>", methods=["Delete"])
+def delete_trade(ref):
     """
     Update an exiting trade in the database.
     """
 
-    try:
-        trade = Trade.query.filter_by(ref=request.form["ref"]).first()
+    trade = Trade.query.filter_by(ref).first()
+
+    if trade:
         db.session.delete(trade)
         db.session.commit()
-        flash("Delete successful.", "danger")
+        # flash("Delete successful.", "danger")
+        return "", 204
 
-    except:
-        db.session.rollback()
-        flash("Error deleting trade.", "danger")
+    else:
+        # flash("Error deleting trade.", "danger")
+        return "Trade not found", 404
 
-    return redirect(url_for("main.index"))
+    # return redirect(url_for("main.index"))
 
 
 @bp.route("/risk", methods=["GET", "POST"])
